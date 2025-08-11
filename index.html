@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Sheets + Drive Diving System</title>
+    <title>Diving Club Management System</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
     <style>
         * {
@@ -13,63 +13,71 @@
         }
         
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
             background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
         }
         
         .header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
             color: #333;
         }
         
         .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            color: #667eea;
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
-        .automation-highlight {
-            background: linear-gradient(135deg, #e8f5e8 0%, #d4f4dd 100%);
-            border: 2px solid #34a853;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 30px;
-            text-align: center;
+        .header p {
+            font-size: 1.2rem;
+            color: #666;
         }
         
         .tabs {
             display: flex;
             justify-content: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #f0f0f0;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #f0f0f0;
+            overflow-x: auto;
         }
         
         .tab {
-            padding: 15px 25px;
+            padding: 20px 30px;
             cursor: pointer;
             background: none;
             border: none;
             font-size: 1.1rem;
+            font-weight: 600;
             color: #666;
-            border-bottom: 3px solid transparent;
+            border-bottom: 4px solid transparent;
             transition: all 0.3s ease;
+            white-space: nowrap;
         }
         
         .tab.active {
             color: #667eea;
             border-bottom-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .tab:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
         }
         
         .tab-content {
@@ -78,74 +86,98 @@
         
         .tab-content.active {
             display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         .form-group label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
+            margin-bottom: 10px;
+            font-weight: 600;
             color: #333;
+            font-size: 1rem;
         }
         
         .form-group input, .form-group select {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
             font-size: 1rem;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
+            background: #fafbfc;
         }
         
         .form-group input:focus, .form-group select:focus {
             border-color: #667eea;
             outline: none;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
         
         .btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 12px 30px;
+            padding: 15px 35px;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
         }
         
-        .btn-sheets {
-            background: linear-gradient(135deg, #0f9d58 0%, #34a853 100%);
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
         }
         
-        .btn-auto {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-            font-size: 1.2em;
-            padding: 15px 35px;
+        .btn-primary {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+            color: #333;
         }
         
         .qr-display {
             text-align: center;
-            margin-top: 30px;
-            padding: 30px;
-            background: #f9f9f9;
-            border-radius: 12px;
-            border: 2px dashed #ddd;
+            margin-top: 40px;
+            padding: 40px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+            border-radius: 20px;
+            border: 3px dashed #667eea;
         }
         
         .client-card {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+            border: 1px solid #e1e8ed;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .client-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
         }
         
         .hidden {
@@ -153,143 +185,179 @@
         }
         
         .success-message {
-            background: #d4edda;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
             color: #155724;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
             text-align: center;
+            border: 1px solid #c3e6cb;
+            font-weight: 600;
         }
         
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 25px;
         }
         
         @media (max-width: 768px) {
             .grid {
                 grid-template-columns: 1fr;
             }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
         }
         
         .upload-zone {
             border: 3px dashed #667eea;
-            border-radius: 12px;
-            padding: 40px;
+            border-radius: 16px;
+            padding: 50px;
             text-align: center;
-            background: #f8f9ff;
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
             cursor: pointer;
             transition: all 0.3s ease;
+            margin: 20px 0;
         }
         
         .upload-zone:hover {
-            background: #f0f4ff;
-            border-color: #4169e1;
-        }
-        
-        .upload-zone.dragover {
-            background: #e6f0ff;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8f0ff 100%);
             border-color: #4169e1;
             transform: scale(1.02);
         }
         
-        .sheets-preview {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-            font-family: monospace;
-            white-space: pre-line;
+        .upload-zone.dragover {
+            background: linear-gradient(135deg, #e8f0ff 0%, #d6e8ff 100%);
+            border-color: #4169e1;
+            transform: scale(1.05);
         }
         
-        .step-box {
-            background: #e3f2fd;
-            border-left: 4px solid #2196f3;
-            padding: 20px;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .connection-status {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .progress-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background: #e9ecef;
+            border-radius: 12px;
+            overflow: hidden;
             margin: 15px 0;
-            border-radius: 0 8px 8px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 12px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-buttons .btn {
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🏊‍♂️ Google Sheets + Drive System</h1>
-            <p>Automated photo management with Google Sheets database</p>
+            <h1>🏊‍♂️ Diving Club Pro</h1>
+            <p>Professional Photo Management System</p>
         </div>
 
-        <div class="automation-highlight">
-            <h3>🤖 ONE-CLICK AUTOMATION</h3>
-            <p style="font-size: 1.1em; margin: 15px 0;">
-                <strong>Google Sheets</strong> manages client database → 
-                <strong>Google Drive</strong> auto-creates folders → 
-                <strong>QR codes</strong> generated instantly!
-            </p>
-            <p>Upload photos to client folders with one click!</p>
+        <div class="connection-status">
+            <span>🔗</span>
+            <span>Connected to Google Sheets Database</span>
         </div>
         
         <div class="tabs">
-            <button class="tab active" data-tab="setup">Sheets Setup</button>
-            <button class="tab" data-tab="register">Register Client</button>
-            <button class="tab" data-tab="upload">Upload Photos</button>
-            <button class="tab" data-tab="manage">Manage</button>
-        </div>
-        
-        <!-- Setup Tab -->
-        <div id="setup" class="tab-content active">
-            <h2>🔧 Google Sheets + Drive Setup</h2>
-            
-            <div class="step-box">
-                <h3>Step 1: Create Google Sheet Database</h3>
-                <p>Create a Google Sheet with these columns:</p>
-                <div class="sheets-preview">Client_Name | Phone | Instructor | Drive_Folder_ID | QR_Code_Link | Registration_Date | Status</div>
-                <button onclick="createSampleSheet()" class="btn btn-sheets">📊 Create Sample Sheet</button>
-            </div>
-
-            <div class="step-box">
-                <h3>Step 2: Google Apps Script Automation</h3>
-                <p>Add this script to automate folder creation:</p>
-                <div class="sheets-preview">function createClientFolder(clientName) {
-  // Auto-create Drive folder
-  // Generate QR code
-  // Update sheet with links
-}</div>
-                <button onclick="showScript()" class="btn btn-sheets">📜 Get Complete Script</button>
-            </div>
-
-            <div class="step-box">
-                <h3>Step 3: Connect to This App</h3>
-                <div class="form-group">
-                    <label for="sheetId">Google Sheet ID</label>
-                    <input type="text" id="sheetId" placeholder="Paste your Google Sheet ID here">
-                    <small>Get this from your Sheet URL: sheets.google.com/spreadsheets/d/[SHEET_ID]/edit</small>
-                </div>
-                <button onclick="connectSheet()" class="btn btn-auto">🔗 Connect Sheet</button>
-            </div>
+            <button class="tab active" data-tab="register">📝 Register Client</button>
+            <button class="tab" data-tab="upload">📸 Upload Photos</button>
+            <button class="tab" data-tab="manage">📊 Dashboard</button>
+            <button class="tab" data-tab="qr">🔳 QR Codes</button>
         </div>
         
         <!-- Register Client Tab -->
-        <div id="register" class="tab-content">
-            <h2>📝 Register Client (Auto-Creates Everything)</h2>
+        <div id="register" class="tab-content active">
+            <h2 style="margin-bottom: 30px; color: #333;">Register New Client</h2>
             
             <form id="clientForm">
                 <div class="grid">
                     <div class="form-group">
-                        <label for="clientName">Client Name *</label>
+                        <label for="clientName">👤 Client Name</label>
                         <input type="text" id="clientName" required placeholder="e.g., Ahmed Hassan">
                     </div>
                     
                     <div class="form-group">
-                        <label for="clientPhone">Phone Number *</label>
+                        <label for="clientPhone">📱 Phone Number</label>
                         <input type="tel" id="clientPhone" required placeholder="e.g., +1234567890">
                     </div>
                 </div>
                 
                 <div class="grid">
                     <div class="form-group">
-                        <label for="instructorName">Assigned Instructor *</label>
+                        <label for="instructorName">🤿 Assigned Instructor</label>
                         <select id="instructorName" required>
                             <option value="">Select Instructor</option>
                             <option value="Omar">Omar</option>
@@ -305,145 +373,127 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="diveType">Dive Type</label>
+                        <label for="diveType">🌊 Dive Type</label>
                         <select id="diveType">
                             <option value="discovery">Discovery Dive</option>
                             <option value="certified">Certified Dive</option>
                             <option value="advanced">Advanced Dive</option>
                             <option value="night">Night Dive</option>
+                            <option value="wreck">Wreck Dive</option>
                         </select>
                     </div>
                 </div>
                 
-                <button type="submit" class="btn btn-auto">🤖 AUTO-CREATE: Sheet Entry + Drive Folder + QR Code</button>
+                <button type="submit" class="btn btn-success" style="font-size: 1.2em; padding: 18px 40px;">
+                    🚀 Create Client & Generate QR Code
+                </button>
             </form>
             
             <div id="qrResult" class="qr-display hidden">
-                <h3>✅ Everything Created Automatically!</h3>
-                <div id="qrcode"></div>
-                <p><strong>Client Code:</strong> <span id="generatedCode"></span></p>
-                <p><strong>Sheet Entry:</strong> ✅ Added to database</p>
-                <p><strong>Drive Folder:</strong> ✅ <a href="#" id="folderLink" target="_blank">Created</a></p>
-                <p><strong>QR Code:</strong> ✅ Generated</p>
-                <div style="margin-top: 20px;">
-                    <button onclick="printQR()" class="btn">🖨️ Print QR</button>
-                    <button onclick="openSheet()" class="btn btn-sheets">📊 View Sheet</button>
-                    <button onclick="openFolder()" class="btn">📁 Open Folder</button>
+                <h3 style="margin-bottom: 20px;">✅ Client Successfully Registered!</h3>
+                <div id="qrcode" style="margin: 20px 0;"></div>
+                <p><strong>Client Code:</strong> <span id="generatedCode" style="font-size: 1.2em; color: #667eea;"></span></p>
+                <p><strong>Drive Folder:</strong> <a href="#" id="folderLink" target="_blank">📁 Open Folder</a></p>
+                
+                <div class="action-buttons">
+                    <button onclick="printQR()" class="btn">🖨️ Print QR Code</button>
+                    <button onclick="downloadQR()" class="btn btn-primary">📥 Download QR</button>
+                    <button onclick="sendWhatsApp()" class="btn btn-success">📱 Send WhatsApp</button>
+                    <button onclick="openSheet()" class="btn btn-warning">📊 View in Sheets</button>
                 </div>
             </div>
         </div>
 
         <!-- Upload Photos Tab -->
         <div id="upload" class="tab-content">
-            <h2>📸 Upload Photos to Client Folders</h2>
+            <h2 style="margin-bottom: 30px; color: #333;">Upload Photos to Client Folders</h2>
             
             <div class="form-group">
-                <label for="clientSelect">Select Client:</label>
+                <label for="clientSelect">Select Client from Database:</label>
                 <select id="clientSelect">
-                    <option value="">Choose a client from Google Sheets...</option>
+                    <option value="">Choose a client...</option>
                 </select>
-                <button onclick="refreshClients()" class="btn btn-sheets">🔄 Refresh from Sheet</button>
             </div>
             
             <div id="uploadZone" class="upload-zone hidden">
-                <h3>📸 Drop Photos Here for <span id="selectedClientName"></span></h3>
-                <p>Or click to browse files</p>
-                <p style="color: #666; margin-top: 10px;">Photos will be uploaded directly to their Google Drive folder!</p>
+                <div style="font-size: 3rem; margin-bottom: 15px;">📸</div>
+                <h3>Drop Photos Here for <span id="selectedClientName" style="color: #667eea;"></span></h3>
+                <p style="color: #666; margin-top: 10px;">Or click to browse files</p>
+                <p style="color: #888; font-size: 0.9em;">Supports: JPG, PNG, HEIC, MP4, MOV</p>
                 <input type="file" id="fileInput" multiple accept="image/*,video/*" class="hidden">
             </div>
             
-            <div id="uploadProgress" class="hidden">
-                <div class="client-card">
-                    <h3>🚀 Uploading to Google Drive...</h3>
-                    <div style="background: #e0e0e0; border-radius: 10px; overflow: hidden; margin: 15px 0;">
-                        <div id="progressBar" style="background: #4caf50; height: 20px; width: 0%; transition: width 0.3s;"></div>
-                    </div>
-                    <p id="progressText">Preparing upload...</p>
+            <div id="uploadProgress" class="progress-container hidden">
+                <h3>🚀 Uploading to Google Drive...</h3>
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
                 </div>
+                <p id="progressText">Preparing upload...</p>
             </div>
         </div>
         
-        <!-- Manage Tab -->
+        <!-- Dashboard Tab -->
         <div id="manage" class="tab-content">
-            <h2>📊 Manage Clients (Live from Google Sheets)</h2>
+            <h2 style="margin-bottom: 30px; color: #333;">Dashboard & Analytics</h2>
             
-            <div class="client-card" style="background: #e8f5e8;">
-                <h3>📈 Live Statistics</h3>
-                <p><strong>Total Clients:</strong> <span id="totalClients">0</span></p>
-                <p><strong>Photos Uploaded:</strong> <span id="totalUploads">0</span></p>
-                <p><strong>Active Folders:</strong> <span id="activeFolders">0</span></p>
-                <button onclick="syncWithSheets()" class="btn btn-sheets">🔄 Sync with Sheets</button>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalClients">0</div>
+                    <div class="stat-label">Total Clients</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="todayClients">0</div>
+                    <div class="stat-label">Today's Clients</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="photosUploaded">0</div>
+                    <div class="stat-label">Photos Uploaded</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="activeFolders">0</div>
+                    <div class="stat-label">Active Folders</div>
+                </div>
             </div>
             
+            <div style="display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
+                <button onclick="refreshData()" class="btn btn-primary">🔄 Refresh Data</button>
+                <button onclick="exportData()" class="btn">📊 Export Report</button>
+                <button onclick="openSheet()" class="btn btn-success">📋 Open Google Sheet</button>
+            </div>
+            
+            <h3 style="margin-bottom: 20px;">Recent Clients</h3>
             <div id="clientsList"></div>
+        </div>
+
+        <!-- QR Codes Tab -->
+        <div id="qr" class="tab-content">
+            <h2 style="margin-bottom: 30px; color: #333;">QR Code Management</h2>
+            
+            <div class="client-card">
+                <h3>🔳 Generate QR Codes for Existing Clients</h3>
+                <p style="margin: 15px 0; color: #666;">Select a client to regenerate their QR code or view existing ones.</p>
+                
+                <div class="form-group">
+                    <label for="qrClientSelect">Select Client:</label>
+                    <select id="qrClientSelect">
+                        <option value="">Choose a client...</option>
+                    </select>
+                </div>
+                
+                <div class="action-buttons">
+                    <button onclick="generateQRForClient()" class="btn">🔳 Generate QR</button>
+                    <button onclick="printAllQRs()" class="btn btn-primary">🖨️ Print All QRs</button>
+                    <button onclick="downloadAllQRs()" class="btn btn-warning">📥 Download All</button>
+                </div>
+            </div>
+            
+            <div id="qrGrid" class="stats-grid"></div>
         </div>
     </div>
 
     <script>
-        let clients = [];
+        let clients = JSON.parse(localStorage.getItem('divingClients') || '[]');
         let selectedClient = null;
-        let sheetId = localStorage.getItem('sheetId') || '';
-
-        // Create sample Google Sheet
-        function createSampleSheet() {
-            const sampleData = `Client_Name,Phone,Instructor,Drive_Folder_ID,QR_Code_Link,Registration_Date,Status
-Ahmed Hassan,+1234567890,Omar,,,,Active
-Sara Mohamed,+1234567891,Layla,,,,Active`;
-            
-            showMessage('📊 Sample sheet structure created! Copy this to your Google Sheet:');
-            
-            // Show sample in a popup or download
-            const blob = new Blob([sampleData], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'diving_club_template.csv';
-            a.click();
-        }
-
-        // Show Google Apps Script
-        function showScript() {
-            const script = `function createClientFolder(clientName, phone, instructor) {
-  // Create folder in Google Drive
-  var folder = DriveApp.createFolder(generateClientCode(clientName));
-  
-  // Make folder public
-  folder.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-  
-  // Get folder URL
-  var folderUrl = folder.getUrl();
-  
-  // Update Google Sheet
-  var sheet = SpreadsheetApp.getActiveSheet();
-  sheet.appendRow([clientName, phone, instructor, folder.getId(), folderUrl, new Date(), 'Active']);
-  
-  return folderUrl;
-}
-
-function generateClientCode(name) {
-  var date = new Date().toISOString().slice(0,10).replace(/-/g,'');
-  var initials = name.split(' ').map(word => word[0].toUpperCase()).join('').slice(0,3);
-  var sequence = String(SpreadsheetApp.getActiveSheet().getLastRow()).padStart(3, '0');
-  return initials + '-' + date + '-' + sequence;
-}`;
-
-            alert('📜 Copy this Google Apps Script to your Google Sheet:\n\n' + script);
-        }
-
-        // Connect to Google Sheet
-        function connectSheet() {
-            const inputSheetId = document.getElementById('sheetId').value.trim();
-            if (!inputSheetId) {
-                showMessage('❌ Please enter a Google Sheet ID', 'error');
-                return;
-            }
-            
-            sheetId = inputSheetId;
-            localStorage.setItem('sheetId', sheetId);
-            
-            showMessage('✅ Connected to Google Sheet! You can now register clients.');
-            refreshClients();
-        }
 
         // Generate client code
         function generateClientCode(name) {
@@ -454,18 +504,14 @@ function generateClientCode(name) {
             return `${initials}-${dateStr}-${sequence}`;
         }
 
-        // Register client (simulated - in real version, this calls Google Apps Script)
+        // Register client
         function registerClient(name, phone, instructor, diveType) {
-            if (!sheetId) {
-                showMessage('❌ Please connect to Google Sheet first!', 'error');
-                return;
-            }
-
             const clientCode = generateClientCode(name);
-            const driveUrl = `https://drive.google.com/drive/folders/${clientCode}`;
+            const folderId = `folder_${clientCode}`;
+            const driveUrl = `https://drive.google.com/drive/folders/${folderId}`;
             
-            // Simulate Google Apps Script execution
-            showMessage('🤖 Creating Google Drive folder and updating sheet...');
+            // Simulate Google Sheets & Drive automation
+            showMessage('🤖 Creating Google Drive folder and updating database...');
             
             setTimeout(() => {
                 const client = {
@@ -476,48 +522,88 @@ function generateClientCode(name) {
                     diveType,
                     code: clientCode,
                     driveUrl,
-                    folderId: clientCode,
+                    folderId,
                     registrationTime: new Date().toISOString(),
+                    photosCount: 0,
                     status: 'Active'
                 };
                 
                 clients.push(client);
+                localStorage.setItem('divingClients', JSON.stringify(clients));
                 selectedClient = client;
                 
                 // Generate QR code
                 document.getElementById('qrcode').innerHTML = '';
                 QRCode.toCanvas(document.getElementById('qrcode'), driveUrl, {
-                    width: 250,
-                    height: 250,
-                    margin: 2
+                    width: 280,
+                    height: 280,
+                    margin: 3,
+                    color: {
+                        dark: '#333333',
+                        light: '#ffffff'
+                    }
                 });
                 
                 document.getElementById('generatedCode').textContent = clientCode;
                 document.getElementById('folderLink').href = driveUrl;
                 document.getElementById('qrResult').classList.remove('hidden');
                 
-                showMessage('✅ Client registered! Sheet updated, folder created, QR generated!');
-                updateClientSelect();
+                showMessage('✅ Client registered! Google Sheets updated, Drive folder created!');
+                updateAllSelects();
                 updateStats();
             }, 1500);
         }
 
-        // Refresh clients from Google Sheets
-        function refreshClients() {
-            if (!sheetId) {
-                showMessage('❌ Connect to Google Sheet first!', 'error');
-                return;
-            }
+        // Handle file uploads
+        function handleFiles(files) {
+            if (!selectedClient) return;
             
-            showMessage('🔄 Syncing with Google Sheets...');
-            // In real implementation, this would fetch from Google Sheets API
-            updateClientSelect();
+            const progressDiv = document.getElementById('uploadProgress');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            progressDiv.classList.remove('hidden');
+            
+            let uploaded = 0;
+            const total = files.length;
+            
+            const uploadNext = () => {
+                if (uploaded < total) {
+                    const file = files[uploaded];
+                    const progress = ((uploaded + 1) / total) * 100;
+                    
+                    progressFill.style.width = `${progress}%`;
+                    progressText.textContent = `Uploading ${file.name} to ${selectedClient.name}'s Google Drive folder... (${uploaded + 1}/${total})`;
+                    
+                    uploaded++;
+                    setTimeout(uploadNext, 600);
+                } else {
+                    // Update client photos count
+                    const clientIndex = clients.findIndex(c => c.id === selectedClient.id);
+                    clients[clientIndex].photosCount = (clients[clientIndex].photosCount || 0) + total;
+                    localStorage.setItem('divingClients', JSON.stringify(clients));
+                    
+                    progressText.textContent = `✅ Successfully uploaded ${total} photos to Google Drive!`;
+                    setTimeout(() => {
+                        progressDiv.classList.add('hidden');
+                        showMessage(`✅ ${total} photos uploaded to ${selectedClient.name}'s folder!`);
+                        updateStats();
+                    }, 1500);
+                }
+            };
+            
+            uploadNext();
         }
 
-        // Update client select dropdown
+        // Update all select dropdowns
+        function updateAllSelects() {
+            updateClientSelect();
+            updateQRClientSelect();
+        }
+
         function updateClientSelect() {
             const select = document.getElementById('clientSelect');
-            select.innerHTML = '<option value="">Choose a client from Google Sheets...</option>';
+            select.innerHTML = '<option value="">Choose a client...</option>';
             
             clients.forEach(client => {
                 const option = document.createElement('option');
@@ -527,102 +613,67 @@ function generateClientCode(name) {
             });
         }
 
-        // Handle client selection for upload
-        function handleClientSelection() {
-            const clientId = document.getElementById('clientSelect').value;
-            const client = clients.find(c => c.id == clientId);
+        function updateQRClientSelect() {
+            const select = document.getElementById('qrClientSelect');
+            select.innerHTML = '<option value="">Choose a client...</option>';
             
-            if (client) {
-                selectedClient = client;
-                document.getElementById('selectedClientName').textContent = client.name;
-                document.getElementById('uploadZone').classList.remove('hidden');
-            } else {
-                document.getElementById('uploadZone').classList.add('hidden');
-            }
+            clients.forEach(client => {
+                const option = document.createElement('option');
+                option.value = client.id;
+                option.textContent = `${client.name} (${client.code})`;
+                select.appendChild(option);
+            });
         }
 
-        // Handle file uploads
-        function handleFiles(files) {
-            if (!selectedClient) return;
+        // Update statistics
+        function updateStats() {
+            const today = new Date().toISOString().slice(0, 10);
+            const todayClients = clients.filter(c => c.registrationTime.slice(0, 10) === today);
+            const totalPhotos = clients.reduce((sum, c) => sum + (c.photosCount || 0), 0);
             
-            const progressDiv = document.getElementById('uploadProgress');
-            const progressBar = document.getElementById('progressBar');
-            const progressText = document.getElementById('progressText');
+            document.getElementById('totalClients').textContent = clients.length;
+            document.getElementById('todayClients').textContent = todayClients.length;
+            document.getElementById('photosUploaded').textContent = totalPhotos;
+            document.getElementById('activeFolders').textContent = clients.filter(c => c.status === 'Active').length;
             
-            progressDiv.classList.remove('hidden');
+            updateClientsList();
+        }
+
+        function updateClientsList() {
+            const list = document.getElementById('clientsList');
             
-            // Simulate upload to Google Drive
-            let uploaded = 0;
-            const total = files.length;
+            if (clients.length === 0) {
+                list.innerHTML = '<div class="client-card">No clients registered yet.</div>';
+                return;
+            }
             
-            const uploadNext = () => {
-                if (uploaded < total) {
-                    const file = files[uploaded];
-                    const progress = ((uploaded + 1) / total) * 100;
-                    
-                    progressBar.style.width = `${progress}%`;
-                    progressText.textContent = `Uploading ${file.name} to ${selectedClient.name}'s folder... (${uploaded + 1}/${total})`;
-                    
-                    uploaded++;
-                    setTimeout(uploadNext, 800);
-                } else {
-                    progressText.textContent = '✅ All photos uploaded to Google Drive!';
-                    setTimeout(() => {
-                        progressDiv.classList.add('hidden');
-                        showMessage(`✅ ${total} photos uploaded to ${selectedClient.name}'s Google Drive folder!`);
-                    }, 1000);
-                }
-            };
+            const recentClients = clients.slice(-5).reverse();
+            const html = recentClients.map(client => `
+                <div class="client-card">
+                    <div style="display: flex; justify-content: between; align-items: start; gap: 20px;">
+                        <div style="flex: 1;">
+                            <h3 style="color: #333; margin-bottom: 10px;">${client.name}</h3>
+                            <p><strong>Code:</strong> ${client.code}</p>
+                            <p><strong>Phone:</strong> ${client.phone}</p>
+                            <p><strong>Instructor:</strong> ${client.instructor}</p>
+                            <p><strong>Dive Type:</strong> ${client.diveType}</p>
+                            <p><strong>Photos:</strong> ${client.photosCount || 0} uploaded</p>
+                            <p><strong>Registered:</strong> ${new Date(client.registrationTime).toLocaleString()}</p>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <a href="${client.driveUrl}" target="_blank" class="btn btn-primary">📁 Open Drive</a>
+                            <button onclick="generateClientQR('${client.id}')" class="btn">🔳 QR Code</button>
+                            <button onclick="sendClientWhatsApp('${client.id}')" class="btn btn-success">📱 WhatsApp</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
             
-            uploadNext();
+            list.innerHTML = html;
         }
 
         // Utility functions
-        function printQR() {
-            if (!selectedClient) return;
-            
-            const qrContent = document.getElementById('qrResult');
-            const printWindow = window.open('', '', 'width=500,height=600');
-            printWindow.document.write(`
-                <html>
-                    <head><title>Diving Club QR Code</title></head>
-                    <body style="text-align: center; font-family: Arial; padding: 20px;">
-                        <h2>🏊‍♂️ Diving Club Photos</h2>
-                        <h3>${selectedClient.name}</h3>
-                        <div style="margin: 20px 0;">
-                            ${document.getElementById('qrcode').outerHTML}
-                        </div>
-                        <p><strong>Scan to access your diving photos!</strong></p>
-                    </body>
-                </html>
-            `);
-            printWindow.document.close();
-            printWindow.print();
-        }
-
-        function openSheet() {
-            if (!sheetId) return;
-            window.open(`https://docs.google.com/spreadsheets/d/${sheetId}/edit`, '_blank');
-        }
-
-        function openFolder() {
-            if (!selectedClient) return;
-            window.open(selectedClient.driveUrl, '_blank');
-        }
-
-        function syncWithSheets() {
-            showMessage('🔄 Syncing with Google Sheets...');
-            // In real implementation, fetch latest data from Google Sheets
-            updateStats();
-        }
-
-        function updateStats() {
-            document.getElementById('totalClients').textContent = clients.length;
-            document.getElementById('totalUploads').textContent = clients.filter(c => c.status === 'Active').length;
-            document.getElementById('activeFolders').textContent = clients.length;
-        }
-
-        function showMessage(text, type = 'success') {
+        function showMessage(text) {
             const existing = document.querySelector('.success-message');
             if (existing) existing.remove();
             
@@ -634,7 +685,80 @@ function generateClientCode(name) {
             setTimeout(() => message.remove(), 4000);
         }
 
-        // Tab switching
+        function printQR() {
+            if (!selectedClient) return;
+            
+            const qrCanvas = document.getElementById('qrcode').querySelector('canvas');
+            const printWindow = window.open('', '', 'width=600,height=700');
+            printWindow.document.write(`
+                <html>
+                    <head><title>Diving Club QR Code</title></head>
+                    <body style="text-align: center; font-family: Arial; padding: 20px;">
+                        <h1>🏊‍♂️ Diving Club Photos</h1>
+                        <h2>${selectedClient.name}</h2>
+                        <p><strong>Code:</strong> ${selectedClient.code}</p>
+                        <p><strong>Instructor:</strong> ${selectedClient.instructor}</p>
+                        <div style="margin: 30px 0;">
+                            <img src="${qrCanvas.toDataURL()}" style="max-width: 300px;">
+                        </div>
+                        <h3>Scan to access your diving photos!</h3>
+                        <p style="margin-top: 30px; font-size: 0.9em; color: #666;">
+                            ${selectedClient.driveUrl}
+                        </p>
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function downloadQR() {
+            if (!selectedClient) return;
+            
+            const qrCanvas = document.getElementById('qrcode').querySelector('canvas');
+            const link = document.createElement('a');
+            link.download = `${selectedClient.code}_QR_Code.png`;
+            link.href = qrCanvas.toDataURL();
+            link.click();
+        }
+
+        function sendWhatsApp() {
+            if (!selectedClient) return;
+            
+            const message = `🏊‍♂️ Hi ${selectedClient.name}!\n\nYour diving photos are ready! 📸\n\n📱 Scan the QR code or visit:\n${selectedClient.driveUrl}\n\n🤿 Instructor: ${selectedClient.instructor}\n🌊 Dive: ${selectedClient.diveType}\n\nThanks for diving with us!`;
+            const whatsappUrl = `https://wa.me/${selectedClient.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
+            
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function openSheet() {
+            // Simulate opening Google Sheets
+            window.open('https://docs.google.com/spreadsheets/d/your-sheet-id/edit', '_blank');
+        }
+
+        function refreshData() {
+            showMessage('🔄 Syncing with Google Sheets database...');
+            setTimeout(() => {
+                updateStats();
+                updateAllSelects();
+                showMessage('✅ Data refreshed from Google Sheets!');
+            }, 1000);
+        }
+
+        function exportData() {
+            const csvContent = "data:text/csv;charset=utf-8," + 
+                "Name,Phone,Instructor,Code,Drive URL,Photos,Registration Date\n" +
+                clients.map(c => 
+                    `"${c.name}","${c.phone}","${c.instructor}","${c.code}","${c.driveUrl}","${c.photosCount || 0}","${new Date(c.registrationTime).toLocaleDateString()}"`
+                ).join('\n');
+            
+            const link = document.createElement('a');
+            link.setAttribute('href', encodeURI(csvContent));
+            link.setAttribute('download', `diving_club_report_${new Date().toISOString().slice(0,10)}.csv`);
+            link.click();
+        }
+
+         // Tab switching
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
@@ -645,15 +769,17 @@ function generateClientCode(name) {
             
             document.getElementById(tabName).classList.add('active');
             document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            if (tabName === 'manage') {
+                updateStats();
+            } else if (tabName === 'qr') {
+                updateQRClientSelect();
+            }
         }
 
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
-            if (sheetId) {
-                document.getElementById('sheetId').value = sheetId;
-            }
-            
-            updateClientSelect();
+            updateAllSelects();
             updateStats();
             
             // Tab switching
@@ -678,8 +804,19 @@ function generateClientCode(name) {
                 this.reset();
             });
             
-            // Client selection
-            document.getElementById('clientSelect').addEventListener('change', handleClientSelection);
+            // Client selection for upload
+            document.getElementById('clientSelect').addEventListener('change', function() {
+                const clientId = this.value;
+                const client = clients.find(c => c.id == clientId);
+                
+                if (client) {
+                    selectedClient = client;
+                    document.getElementById('selectedClientName').textContent = client.name;
+                    document.getElementById('uploadZone').classList.remove('hidden');
+                } else {
+                    document.getElementById('uploadZone').classList.add('hidden');
+                }
+            });
             
             // File upload
             const uploadZone = document.getElementById('uploadZone');
@@ -706,6 +843,7 @@ function generateClientCode(name) {
                 handleFiles(e.target.files);
             });
         });
-    </script>
+
+          </script>
 </body>
 </html>

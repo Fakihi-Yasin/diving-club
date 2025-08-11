@@ -384,11 +384,82 @@
             return `${initials}-${dateStr}-${sequence}`;
         }
 
-        // Generate secure download link
+        // Generate working download link
         function generateDownloadLink(clientCode) {
-            // In real implementation, this would be your storage provider's URL
-            const baseUrl = window.location.origin;
-            return `${baseUrl}/client/${clientCode}`;
+            // Use a real file sharing service or your main app
+            return `${window.location.origin}/#download=${clientCode}`;
+        }
+
+        // Handle download requests
+        function handleDownload() {
+            const urlParams = new URLSearchParams(window.location.hash.substring(1));
+            const clientCode = urlParams.get('download');
+            
+            if (clientCode) {
+                showClientDownloadPage(clientCode);
+            }
+        }
+
+        // Show download page for client
+        function showClientDownloadPage(clientCode) {
+            const client = clients.find(c => c.code === clientCode);
+            
+            if (!client) {
+                showMessage('❌ Client not found or link expired');
+                return;
+            }
+
+            // Hide main interface and show download page
+            document.querySelector('.tabs').style.display = 'none';
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+
+            // Create download page
+            const downloadPage = document.createElement('div');
+            downloadPage.id = 'downloadPage';
+            downloadPage.innerHTML = `
+                <div class="client-card" style="text-align: center; max-width: 600px; margin: 50px auto;">
+                    <h2>🏊‍♂️ Your Diving Photos</h2>
+                    <p style="font-size: 1.2em; margin: 20px 0;"><strong>${client.name}</strong></p>
+                    <p><strong>Dive Date:</strong> ${new Date(client.registrationTime).toLocaleDateString()}</p>
+                    <p><strong>Instructor:</strong> ${client.instructor}</p>
+                    
+                    ${client.filesUploaded ? `
+                        <div style="margin: 30px 0;">
+                            <h3>📸 ${client.fileCount} Photos/Videos Ready!</h3>
+                            <button onclick="downloadFiles('${clientCode}')" class="btn" style="font-size: 1.2em; padding: 15px 30px;">
+                                📥 Download All Photos
+                            </button>
+                        </div>
+                    ` : `
+                        <div style="margin: 30px 0; padding: 20px; background: #fff3cd; border-radius: 8px;">
+                            <h3>⏳ Photos Being Processed</h3>
+                            <p>Your diving photos are being uploaded and processed.</p>
+                            <p>Please check back in a few minutes!</p>
+                            <button onclick="location.reload()" class="btn btn-secondary">🔄 Refresh</button>
+                        </div>
+                    `}
+                    
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
+                        <p style="color: #666;">Thank you for diving with us! 🌊</p>
+                    </div>
+                </div>
+            `;
+
+            document.querySelector('.container').appendChild(downloadPage);
+        }
+
+        // Download files function
+        function downloadFiles(clientCode) {
+            const client = clients.find(c => c.code === clientCode);
+            if (!client) return;
+
+            // In a real implementation, this would trigger actual file downloads
+            showMessage('📥 Download started! (In real implementation, files would download automatically)');
+            
+            // For demo purposes, show what would happen
+            alert(`✅ Download started!\n\nClient: ${client.name}\nFiles: ${client.fileCount} photos/videos\n\n(In the real system, a ZIP file with all photos would download automatically)`);
         }
 
         // Show message
@@ -636,6 +707,12 @@
 
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
+            // Check if this is a download link
+            if (window.location.hash.includes('download=')) {
+                handleDownload();
+                return;
+            }
+
             updateClientsList();
             updateClientSelect();
             

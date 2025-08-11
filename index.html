@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Automated Diving Club System</title>
+    <title>Diving Club - Dropbox System</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
     <style>
         * {
@@ -20,7 +20,7 @@
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 800px;
             margin: 0 auto;
             background: white;
             border-radius: 15px;
@@ -38,6 +38,14 @@
             font-size: 2.5rem;
             margin-bottom: 10px;
             color: #667eea;
+        }
+        
+        .working-solution {
+            background: #e8f5e8;
+            border: 2px solid #34a853;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
         }
         
         .tabs {
@@ -111,8 +119,8 @@
             transform: translateY(-2px);
         }
         
-        .btn-secondary {
-            background: #6c757d;
+        .btn-dropbox {
+            background: #0061ff;
         }
         
         .qr-display {
@@ -146,234 +154,145 @@
             text-align: center;
         }
         
-        .upload-area {
-            border: 3px dashed #667eea;
-            border-radius: 12px;
-            padding: 40px;
-            text-align: center;
-            margin-top: 20px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            position: relative;
-        }
-        
-        .upload-area:hover {
-            background-color: #f0f4ff;
-        }
-        
-        .upload-area.dragover {
-            background-color: #e6f0ff;
-            border-color: #4169e1;
-        }
-        
-        .progress {
-            width: 100%;
-            height: 20px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 15px 0;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-        
-        .automation-info {
-            background: #e8f5e8;
-            border: 2px solid #34a853;
-            border-radius: 12px;
+        .step-guide {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
             padding: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        
-        @media (max-width: 768px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🏊‍♂️ Automated Diving Club System</h1>
-            <p>Fully automated photo sharing with zero manual work</p>
+            <h1>🏊‍♂️ Diving Club System</h1>
+            <p>Real file sharing with Dropbox integration</p>
         </div>
 
-        <div class="automation-info">
-            <h3>🤖 Fully Automated Process</h3>
-            <p><strong>1. Register client</strong> → QR code generated + unique storage space created</p>
-            <p><strong>2. Upload photos</strong> → Drag & drop to client's folder (auto-organized)</p>
-            <p><strong>3. Client scans QR</strong> → Downloads photos instantly via secure link</p>
-            <p><strong>Zero manual folder creation!</strong></p>
+        <div class="working-solution">
+            <h3>✅ WORKING SOLUTION: Real File Downloads</h3>
+            <p><strong>How it works:</strong></p>
+            <ol style="padding-left: 20px; line-height: 1.8;">
+                <li>Create Dropbox folders for each client</li>
+                <li>Upload photos to their folder</li>
+                <li>Generate public download links</li>
+                <li>QR codes link directly to downloadable files</li>
+            </ol>
         </div>
         
         <div class="tabs">
-            <button class="tab active" data-tab="register">Register Client</button>
-            <button class="tab" data-tab="upload">Upload Photos</button>
-            <button class="tab" data-tab="manage">Manage Clients</button>
-            <button class="tab" data-tab="settings">Settings</button>
+            <button class="tab active" data-tab="setup">Setup</button>
+            <button class="tab" data-tab="register">Register Client</button>
+            <button class="tab" data-tab="manage">Manage</button>
+        </div>
+        
+        <!-- Setup Tab -->
+        <div id="setup" class="tab-content active">
+            <h2>Dropbox Setup (5 minutes)</h2>
+            
+            <div class="step-guide">
+                <h3>Step 1: Create Dropbox Account</h3>
+                <p>1. Go to <a href="https://dropbox.com" target="_blank">dropbox.com</a> and create free account (2GB free)</p>
+                <p>2. Create main folder: "Diving Club Photos"</p>
+            </div>
+
+            <div class="step-guide">
+                <h3>Step 2: For Each Client</h3>
+                <p>1. Create subfolder with client code (e.g., "AHM-20250811-001")</p>
+                <p>2. Upload client photos to their folder</p>
+                <p>3. Right-click folder → Share → Create link</p>
+                <p>4. Copy the share link and use it below</p>
+            </div>
+
+            <div class="client-card">
+                <h3>🔗 Alternative: Instant File Sharing</h3>
+                <p><strong>WeTransfer Method:</strong></p>
+                <ol>
+                    <li>Upload photos to <a href="https://wetransfer.com" target="_blank">wetransfer.com</a></li>
+                    <li>Get download link (valid 7 days)</li>
+                    <li>Use that link for QR code</li>
+                    <li>Client downloads ZIP file directly</li>
+                </ol>
+            </div>
+
+            <div class="client-card">
+                <h3>📁 Google Drive Method</h3>
+                <ol>
+                    <li>Create Google Drive folder for client</li>
+                    <li>Upload photos</li>
+                    <li>Share folder: "Anyone with link can view"</li>
+                    <li>Use share link for QR code</li>
+                </ol>
+            </div>
         </div>
         
         <!-- Register Client Tab -->
-        <div id="register" class="tab-content active">
-            <h2>Register New Client</h2>
+        <div id="register" class="tab-content">
+            <h2>Register Client with Download Link</h2>
             
             <form id="clientForm">
-                <div class="grid">
-                    <div class="form-group">
-                        <label for="clientName">Client Name *</label>
-                        <input type="text" id="clientName" required placeholder="e.g., Ahmed Hassan">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="clientPhone">Phone Number *</label>
-                        <input type="tel" id="clientPhone" required placeholder="e.g., +1234567890">
-                    </div>
+                <div class="form-group">
+                    <label for="clientName">Client Name *</label>
+                    <input type="text" id="clientName" required placeholder="e.g., Ahmed Hassan">
                 </div>
                 
-                <div class="grid">
-                    <div class="form-group">
-                        <label for="instructorName">Assigned Instructor *</label>
-                        <select id="instructorName" required>
-                            <option value="">Select Instructor</option>
-                            <option value="Omar">Omar - Instructor 1</option>
-                            <option value="Sara">Sara - Instructor 2</option>
-                            <option value="Mohamed">Mohamed - Instructor 3</option>
-                            <option value="Layla">Layla - Instructor 4</option>
-                            <option value="Hassan">Hassan - Instructor 5</option>
-                            <option value="Fatima">Fatima - Instructor 6</option>
-                            <option value="Ahmed">Ahmed - Instructor 7</option>
-                            <option value="Nour">Nour - Instructor 8</option>
-                            <option value="Khalil">Khalil - Instructor 9</option>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label for="clientPhone">Phone Number *</label>
+                    <input type="tel" id="clientPhone" required placeholder="e.g., +1234567890">
+                </div>
+                
+                <div class="form-group">
+                    <label for="instructorName">Assigned Instructor *</label>
+                    <select id="instructorName" required>
+                        <option value="">Select Instructor</option>
+                        <option value="Omar">Omar</option>
+                        <option value="Sara">Sara</option>
+                        <option value="Mohamed">Mohamed</option>
+                        <option value="Layla">Layla</option>
+                        <option value="Hassan">Hassan</option>
+                        <option value="Fatima">Fatima</option>
+                        <option value="Ahmed">Ahmed</option>
+                        <option value="Nour">Nour</option>
+                        <option value="Khalil">Khalil</option>
+                    </select>
+                </div>
 
-                    <div class="form-group">
-                        <label for="diveType">Dive Type</label>
-                        <select id="diveType">
-                            <option value="discovery">Discovery Dive</option>
-                            <option value="certified">Certified Dive</option>
-                            <option value="advanced">Advanced Dive</option>
-                            <option value="night">Night Dive</option>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label for="downloadUrl">Photo Download Link *</label>
+                    <input type="url" id="downloadUrl" required placeholder="Paste Dropbox/Drive/WeTransfer link here">
+                    <small style="color: #666;">Create folder, upload photos, get share link, paste here</small>
                 </div>
                 
-                <button type="submit" class="btn">🤖 Auto-Generate Client & QR Code</button>
+                <button type="submit" class="btn">Generate QR Code with Real Download</button>
             </form>
             
             <div id="qrResult" class="qr-display hidden">
-                <h3>✅ Client Registered & Storage Created!</h3>
+                <h3>✅ QR Code Generated - REAL DOWNLOAD LINK!</h3>
                 <div id="qrcode"></div>
                 <p><strong>Client Code:</strong> <span id="generatedCode"></span></p>
-                <p><strong>Secure Download Link:</strong> <span id="downloadLink" style="font-size: 0.8em;"></span></p>
+                <p><strong>Download Link:</strong> <a href="#" id="downloadLink" target="_blank">Test Download Link</a></p>
                 <div style="margin-top: 15px;">
-                    <button onclick="printQR()" class="btn">🖨️ Print QR Code</button>
-                    <button onclick="sendWhatsApp()" class="btn btn-secondary">📱 Send via WhatsApp</button>
+                    <button onclick="printQR()" class="btn">🖨️ Print QR</button>
+                    <button onclick="testDownload()" class="btn btn-dropbox">🧪 Test Download</button>
                 </div>
             </div>
         </div>
         
-        <!-- Upload Photos Tab -->
-        <div id="upload" class="tab-content">
-            <h2>Upload Photos & Videos</h2>
-            
-            <div class="form-group">
-                <label for="clientSelect">Select Client:</label>
-                <select id="clientSelect">
-                    <option value="">Choose a client...</option>
-                </select>
-            </div>
-            
-            <div id="uploadSection" class="hidden">
-                <div class="upload-area" id="uploadArea">
-                    <h3>📸 Drag & Drop Photos/Videos Here</h3>
-                    <p>Or click to browse files</p>
-                    <p style="color: #666; margin-top: 10px;">Supported: JPG, PNG, MP4, MOV, HEIC</p>
-                    <input type="file" id="fileInput" multiple accept="image/*,video/*" class="hidden">
-                </div>
-                
-                <div id="fileList"></div>
-                
-                <div id="uploadProgress" class="hidden">
-                    <div class="progress">
-                        <div class="progress-bar" id="progressBar"></div>
-                    </div>
-                    <p id="progressText">Preparing upload...</p>
-                </div>
-                
-                <button id="uploadBtn" class="btn hidden" style="margin-top: 20px;">🚀 Upload to Client Storage</button>
-            </div>
-        </div>
-        
-        <!-- Manage Clients Tab -->
+        <!-- Manage Tab -->
         <div id="manage" class="tab-content">
             <h2>Today's Clients</h2>
             <div id="clientsList"></div>
-        </div>
-
-        <!-- Settings Tab -->
-        <div id="settings" class="tab-content">
-            <h2>Automation Settings</h2>
-            
-            <div class="client-card">
-                <h3>🔧 Storage Configuration</h3>
-                <div class="form-group">
-                    <label for="storageProvider">Storage Provider</label>
-                    <select id="storageProvider">
-                        <option value="firebase">Firebase Storage (Recommended)</option>
-                        <option value="cloudinary">Cloudinary</option>
-                        <option value="aws">AWS S3</option>
-                        <option value="drive">Google Drive (Manual setup required)</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="apiConfig">API Configuration</label>
-                    <input type="password" id="apiConfig" placeholder="Enter your storage API key">
-                </div>
-                
-                <button onclick="saveSettings()" class="btn">💾 Save Settings</button>
-            </div>
 
             <div class="client-card">
-                <h3>📱 WhatsApp Integration</h3>
-                <div class="form-group">
-                    <label for="whatsappApi">WhatsApp API Key</label>
-                    <input type="password" id="whatsappApi" placeholder="Optional: For auto-sending QR codes">
-                </div>
-                
-                <div class="form-group">
-                    <label for="clubName">Club Name</label>
-                    <input type="text" id="clubName" placeholder="Your Diving Club Name">
-                </div>
-            </div>
-
-            <div class="client-card">
-                <h3>⚡ Quick Setup Options</h3>
-                <p>Choose your preferred setup:</p>
-                <button onclick="setupFirebase()" class="btn" style="margin: 10px 5px;">🔥 Setup Firebase (Free)</button>
-                <button onclick="setupCloudinary()" class="btn" style="margin: 10px 5px;">☁️ Setup Cloudinary (Free)</button>
-                <button onclick="setupBasic()" class="btn btn-secondary" style="margin: 10px 5px;">📁 Basic Setup (No upload)</button>
+                <h3>📊 Quick Stats</h3>
+                <p><strong>Total Clients:</strong> <span id="totalClients">0</span></p>
+                <p><strong>Active Downloads:</strong> <span id="activeDownloads">0</span></p>
             </div>
         </div>
     </div>
 
     <script>
         let clients = JSON.parse(localStorage.getItem('divingClients') || '[]');
-        let selectedFiles = [];
-        let settings = JSON.parse(localStorage.getItem('divingSettings') || '{}');
 
         // Generate client code
         function generateClientCode(name) {
@@ -382,84 +301,6 @@
             const initials = name.split(' ').map(word => word[0].toUpperCase()).join('').slice(0, 3);
             const sequence = String(clients.length + 1).padStart(3, '0');
             return `${initials}-${dateStr}-${sequence}`;
-        }
-
-        // Generate working download link
-        function generateDownloadLink(clientCode) {
-            // Use a real file sharing service or your main app
-            return `${window.location.origin}/#download=${clientCode}`;
-        }
-
-        // Handle download requests
-        function handleDownload() {
-            const urlParams = new URLSearchParams(window.location.hash.substring(1));
-            const clientCode = urlParams.get('download');
-            
-            if (clientCode) {
-                showClientDownloadPage(clientCode);
-            }
-        }
-
-        // Show download page for client
-        function showClientDownloadPage(clientCode) {
-            const client = clients.find(c => c.code === clientCode);
-            
-            if (!client) {
-                showMessage('❌ Client not found or link expired');
-                return;
-            }
-
-            // Hide main interface and show download page
-            document.querySelector('.tabs').style.display = 'none';
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.style.display = 'none';
-            });
-
-            // Create download page
-            const downloadPage = document.createElement('div');
-            downloadPage.id = 'downloadPage';
-            downloadPage.innerHTML = `
-                <div class="client-card" style="text-align: center; max-width: 600px; margin: 50px auto;">
-                    <h2>🏊‍♂️ Your Diving Photos</h2>
-                    <p style="font-size: 1.2em; margin: 20px 0;"><strong>${client.name}</strong></p>
-                    <p><strong>Dive Date:</strong> ${new Date(client.registrationTime).toLocaleDateString()}</p>
-                    <p><strong>Instructor:</strong> ${client.instructor}</p>
-                    
-                    ${client.filesUploaded ? `
-                        <div style="margin: 30px 0;">
-                            <h3>📸 ${client.fileCount} Photos/Videos Ready!</h3>
-                            <button onclick="downloadFiles('${clientCode}')" class="btn" style="font-size: 1.2em; padding: 15px 30px;">
-                                📥 Download All Photos
-                            </button>
-                        </div>
-                    ` : `
-                        <div style="margin: 30px 0; padding: 20px; background: #fff3cd; border-radius: 8px;">
-                            <h3>⏳ Photos Being Processed</h3>
-                            <p>Your diving photos are being uploaded and processed.</p>
-                            <p>Please check back in a few minutes!</p>
-                            <button onclick="location.reload()" class="btn btn-secondary">🔄 Refresh</button>
-                        </div>
-                    `}
-                    
-                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
-                        <p style="color: #666;">Thank you for diving with us! 🌊</p>
-                    </div>
-                </div>
-            `;
-
-            document.querySelector('.container').appendChild(downloadPage);
-        }
-
-        // Download files function
-        function downloadFiles(clientCode) {
-            const client = clients.find(c => c.code === clientCode);
-            if (!client) return;
-
-            // In a real implementation, this would trigger actual file downloads
-            showMessage('📥 Download started! (In real implementation, files would download automatically)');
-            
-            // For demo purposes, show what would happen
-            alert(`✅ Download started!\n\nClient: ${client.name}\nFiles: ${client.fileCount} photos/videos\n\n(In the real system, a ZIP file with all photos would download automatically)`);
         }
 
         // Show message
@@ -475,34 +316,25 @@
             setTimeout(() => message.remove(), 4000);
         }
 
-        // Register client - AUTOMATED
-        async function registerClient(name, phone, instructor, diveType) {
+        // Register client with real download link
+        function registerClient(name, phone, instructor, downloadUrl) {
             const clientCode = generateClientCode(name);
-            const downloadUrl = generateDownloadLink(clientCode);
-            
-            // Simulate automated storage creation
-            showMessage('🤖 Creating automated storage space...');
-            
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
             
             const client = {
                 id: Date.now(),
                 name,
                 phone,
                 instructor,
-                diveType,
                 code: clientCode,
                 downloadUrl,
                 registrationTime: new Date().toISOString(),
-                filesUploaded: false,
-                fileCount: 0,
-                storageCreated: true
+                hasRealFiles: true
             };
             
             clients.push(client);
             localStorage.setItem('divingClients', JSON.stringify(clients));
             
-            // Generate QR code
+            // Generate QR code with REAL download link
             document.getElementById('qrcode').innerHTML = '';
             QRCode.toCanvas(document.getElementById('qrcode'), downloadUrl, {
                 width: 200,
@@ -511,115 +343,28 @@
             });
             
             document.getElementById('generatedCode').textContent = clientCode;
-            document.getElementById('downloadLink').textContent = downloadUrl;
+            const linkElement = document.getElementById('downloadLink');
+            linkElement.href = downloadUrl;
+            linkElement.textContent = downloadUrl;
             document.getElementById('qrResult').classList.remove('hidden');
             
-            showMessage('✅ Client registered! Storage created automatically!');
+            showMessage('✅ QR Code generated with REAL download link!');
             updateClientsList();
-            updateClientSelect();
+            updateStats();
         }
 
-        // File upload simulation
-        async function uploadFiles() {
-            const clientId = document.getElementById('clientSelect').value;
-            const client = clients.find(c => c.id == clientId);
-            
-            if (!client || !selectedFiles.length) return;
-            
-            const uploadBtn = document.getElementById('uploadBtn');
-            const progressDiv = document.getElementById('uploadProgress');
-            const progressBar = document.getElementById('progressBar');
-            const progressText = document.getElementById('progressText');
-            
-            uploadBtn.classList.add('hidden');
-            progressDiv.classList.remove('hidden');
-            
-            try {
-                for (let i = 0; i < selectedFiles.length; i++) {
-                    const file = selectedFiles[i];
-                    const progress = ((i + 1) / selectedFiles.length) * 100;
-                    
-                    progressBar.style.width = `${progress}%`;
-                    progressText.textContent = `Uploading ${file.name}... (${i + 1}/${selectedFiles.length})`;
-                    
-                    // Simulate upload
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                }
-                
-                // Update client record
-                const clientIndex = clients.findIndex(c => c.id == clientId);
-                clients[clientIndex].filesUploaded = true;
-                clients[clientIndex].fileCount = selectedFiles.length;
-                localStorage.setItem('divingClients', JSON.stringify(clients));
-                
-                // Reset UI
-                selectedFiles = [];
-                document.getElementById('fileList').innerHTML = '';
-                document.getElementById('clientSelect').value = '';
-                document.getElementById('uploadSection').classList.add('hidden');
-                progressDiv.classList.add('hidden');
-                uploadBtn.classList.remove('hidden');
-                
-                updateClientsList();
-                showMessage(`✅ ${selectedFiles.length} files uploaded automatically!`);
-                
-            } catch (error) {
-                console.error('Upload error:', error);
-                progressDiv.classList.add('hidden');
-                uploadBtn.classList.remove('hidden');
-                showMessage('❌ Upload failed. Please try again.');
+        // Test download function
+        function testDownload() {
+            const downloadUrl = document.getElementById('downloadLink').href;
+            if (downloadUrl && downloadUrl !== '#') {
+                window.open(downloadUrl, '_blank');
+                showMessage('🧪 Testing download link - should open in new tab!');
+            } else {
+                showMessage('❌ No download link available');
             }
         }
 
-        // WhatsApp integration
-        function sendWhatsApp() {
-            const client = clients[clients.length - 1];
-            if (!client) return;
-            
-            const message = `🏊‍♂️ Your diving photos are ready!\n\nClient: ${client.name}\nCode: ${client.code}\n\nScan this QR code or visit: ${client.downloadUrl}\n\nThanks for diving with us!`;
-            const whatsappUrl = `https://wa.me/${client.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
-            
-            window.open(whatsappUrl, '_blank');
-        }
-
-        // Quick setup functions
-        function setupFirebase() {
-            showMessage('🔥 Firebase setup guide will be provided - free 1GB storage!');
-        }
-
-        function setupCloudinary() {
-            showMessage('☁️ Cloudinary setup guide will be provided - free 25GB storage!');
-        }
-
-        function setupBasic() {
-            showMessage('📁 Basic mode activated - manual photo sharing');
-        }
-
-        function saveSettings() {
-            const storageProvider = document.getElementById('storageProvider').value;
-            const apiConfig = document.getElementById('apiConfig').value;
-            const whatsappApi = document.getElementById('whatsappApi').value;
-            const clubName = document.getElementById('clubName').value;
-            
-            settings = { storageProvider, apiConfig, whatsappApi, clubName };
-            localStorage.setItem('divingSettings', JSON.stringify(settings));
-            
-            showMessage('💾 Settings saved successfully!');
-        }
-
-        // Update functions
-        function updateClientSelect() {
-            const select = document.getElementById('clientSelect');
-            select.innerHTML = '<option value="">Choose a client...</option>';
-            
-            clients.forEach(client => {
-                const option = document.createElement('option');
-                option.value = client.id;
-                option.textContent = `${client.name} (${client.code}) - ${client.instructor}`;
-                select.appendChild(option);
-            });
-        }
-
+        // Update clients list
         function updateClientsList() {
             const list = document.getElementById('clientsList');
             
@@ -634,39 +379,29 @@
                     <p><strong>Code:</strong> ${client.code}</p>
                     <p><strong>Phone:</strong> ${client.phone}</p>
                     <p><strong>Instructor:</strong> ${client.instructor}</p>
-                    <p><strong>Dive Type:</strong> ${client.diveType}</p>
-                    <p><strong>Files:</strong> ${client.filesUploaded ? `${client.fileCount} uploaded ✅` : 'Pending ⏳'}</p>
-                    <p><strong>Storage:</strong> ${client.storageCreated ? 'Auto-created ✅' : 'Manual 📁'}</p>
+                    <p><strong>Files:</strong> ${client.hasRealFiles ? 'Real downloads available ✅' : 'Demo mode 📝'}</p>
                     <p><strong>Time:</strong> ${new Date(client.registrationTime).toLocaleTimeString()}</p>
-                    <p><strong>Download:</strong> <a href="${client.downloadUrl}" target="_blank">Client Link</a></p>
+                    <p><strong>Download:</strong> <a href="${client.downloadUrl}" target="_blank">Open Download Link</a></p>
+                    <button onclick="sendWhatsApp('${client.phone}', '${client.downloadUrl}', '${client.name}')" class="btn" style="margin-top: 10px;">📱 Send via WhatsApp</button>
                 </div>
             `).join('');
             
             list.innerHTML = html;
         }
 
-        function handleFiles(files) {
-            selectedFiles = Array.from(files);
-            displaySelectedFiles();
+        // Update stats
+        function updateStats() {
+            document.getElementById('totalClients').textContent = clients.length;
+            document.getElementById('activeDownloads').textContent = clients.filter(c => c.hasRealFiles).length;
         }
 
-        function displaySelectedFiles() {
-            const fileList = document.getElementById('fileList');
-            fileList.innerHTML = '';
+        // Send WhatsApp message with download link
+        function sendWhatsApp(phone, downloadUrl, clientName) {
+            const message = `🏊‍♂️ Hi ${clientName}!\n\nYour diving photos are ready for download!\n\n📸 Click here to download: ${downloadUrl}\n\nThanks for diving with us! 🌊`;
+            const whatsappUrl = `https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
             
-            if (selectedFiles.length > 0) {
-                const listHTML = selectedFiles.map((file, index) => `
-                    <div class="client-card">
-                        <strong>${file.name}</strong>
-                        <span style="float: right; color: #666;">
-                            ${(file.size / 1024 / 1024).toFixed(1)} MB
-                        </span>
-                    </div>
-                `).join('');
-                
-                fileList.innerHTML = listHTML;
-                document.getElementById('uploadBtn').classList.remove('hidden');
-            }
+            window.open(whatsappUrl, '_blank');
+            showMessage('📱 WhatsApp message prepared with download link!');
         }
 
         // Tab switching
@@ -683,8 +418,7 @@
             
             if (tabName === 'manage') {
                 updateClientsList();
-            } else if (tabName === 'upload') {
-                updateClientSelect();
+                updateStats();
             }
         }
 
@@ -694,10 +428,11 @@
             const printWindow = window.open('', '', 'width=400,height=400');
             printWindow.document.write(`
                 <html>
-                    <head><title>Print QR Code</title></head>
+                    <head><title>Diving Club QR Code</title></head>
                     <body style="text-align: center; font-family: Arial; padding: 20px;">
-                        <h2>🏊‍♂️ Diving Club - Client QR Code</h2>
+                        <h2>🏊‍♂️ Diving Club Photos</h2>
                         ${qrContent.innerHTML}
+                        <p style="margin-top: 20px;">Scan to download your diving photos!</p>
                     </body>
                 </html>
             `);
@@ -707,14 +442,8 @@
 
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if this is a download link
-            if (window.location.hash.includes('download=')) {
-                handleDownload();
-                return;
-            }
-
             updateClientsList();
-            updateClientSelect();
+            updateStats();
             
             // Tab switching
             document.querySelectorAll('.tab').forEach(tab => {
@@ -730,50 +459,13 @@
                 const name = document.getElementById('clientName').value;
                 const phone = document.getElementById('clientPhone').value;
                 const instructor = document.getElementById('instructorName').value;
-                const diveType = document.getElementById('diveType').value;
+                const downloadUrl = document.getElementById('downloadUrl').value;
                 
-                registerClient(name, phone, instructor, diveType);
+                registerClient(name, phone, instructor, downloadUrl);
                 
                 // Reset form
                 this.reset();
             });
-            
-            // File upload handling
-            const uploadArea = document.getElementById('uploadArea');
-            const fileInput = document.getElementById('fileInput');
-
-            uploadArea.addEventListener('click', () => fileInput.click());
-            
-            uploadArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                uploadArea.classList.add('dragover');
-            });
-
-            uploadArea.addEventListener('dragleave', () => {
-                uploadArea.classList.remove('dragover');
-            });
-
-            uploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-                handleFiles(e.dataTransfer.files);
-            });
-
-            fileInput.addEventListener('change', (e) => {
-                handleFiles(e.target.files);
-            });
-
-            // Handle client selection for upload
-            document.getElementById('clientSelect').addEventListener('change', function() {
-                if (this.value) {
-                    document.getElementById('uploadSection').classList.remove('hidden');
-                } else {
-                    document.getElementById('uploadSection').classList.add('hidden');
-                }
-            });
-
-            // Upload button
-            document.getElementById('uploadBtn').addEventListener('click', uploadFiles);
         });
     </script>
 </body>

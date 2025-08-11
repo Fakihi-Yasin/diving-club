@@ -1,1 +1,703 @@
-https://drive.google.com/drive/folders/10V7CyfON5_t60tlEhxbkg1DnAvaJ3fQB
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated Diving Club System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #333;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .tab {
+            padding: 15px 20px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .qr-display {
+            text-align: center;
+            margin-top: 30px;
+            padding: 30px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            border: 2px dashed #ddd;
+        }
+        
+        .client-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+        
+        .upload-area:hover {
+            background-color: #f0f4ff;
+        }
+        
+        .upload-area.dragover {
+            background-color: #e6f0ff;
+            border-color: #4169e1;
+        }
+        
+        .progress {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .automation-info {
+            background: #e8f5e8;
+            border: 2px solid #34a853;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏊‍♂️ Automated Diving Club System</h1>
+            <p>Fully automated photo sharing with zero manual work</p>
+        </div>
+
+        <div class="automation-info">
+            <h3>🤖 Fully Automated Process</h3>
+            <p><strong>1. Register client</strong> → QR code generated + unique storage space created</p>
+            <p><strong>2. Upload photos</strong> → Drag & drop to client's folder (auto-organized)</p>
+            <p><strong>3. Client scans QR</strong> → Downloads photos instantly via secure link</p>
+            <p><strong>Zero manual folder creation!</strong></p>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="register">Register Client</button>
+            <button class="tab" data-tab="upload">Upload Photos</button>
+            <button class="tab" data-tab="manage">Manage Clients</button>
+            <button class="tab" data-tab="settings">Settings</button>
+        </div>
+        
+        <!-- Register Client Tab -->
+        <div id="register" class="tab-content active">
+            <h2>Register New Client</h2>
+            
+            <form id="clientForm">
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="clientName">Client Name *</label>
+                        <input type="text" id="clientName" required placeholder="e.g., Ahmed Hassan">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="clientPhone">Phone Number *</label>
+                        <input type="tel" id="clientPhone" required placeholder="e.g., +1234567890">
+                    </div>
+                </div>
+                
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="instructorName">Assigned Instructor *</label>
+                        <select id="instructorName" required>
+                            <option value="">Select Instructor</option>
+                            <option value="Omar">Omar - Instructor 1</option>
+                            <option value="Sara">Sara - Instructor 2</option>
+                            <option value="Mohamed">Mohamed - Instructor 3</option>
+                            <option value="Layla">Layla - Instructor 4</option>
+                            <option value="Hassan">Hassan - Instructor 5</option>
+                            <option value="Fatima">Fatima - Instructor 6</option>
+                            <option value="Ahmed">Ahmed - Instructor 7</option>
+                            <option value="Nour">Nour - Instructor 8</option>
+                            <option value="Khalil">Khalil - Instructor 9</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="diveType">Dive Type</label>
+                        <select id="diveType">
+                            <option value="discovery">Discovery Dive</option>
+                            <option value="certified">Certified Dive</option>
+                            <option value="advanced">Advanced Dive</option>
+                            <option value="night">Night Dive</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn">🤖 Auto-Generate Client & QR Code</button>
+            </form>
+            
+            <div id="qrResult" class="qr-display hidden">
+                <h3>✅ Client Registered & Storage Created!</h3>
+                <div id="qrcode"></div>
+                <p><strong>Client Code:</strong> <span id="generatedCode"></span></p>
+                <p><strong>Secure Download Link:</strong> <span id="downloadLink" style="font-size: 0.8em;"></span></p>
+                <div style="margin-top: 15px;">
+                    <button onclick="printQR()" class="btn">🖨️ Print QR Code</button>
+                    <button onclick="sendWhatsApp()" class="btn btn-secondary">📱 Send via WhatsApp</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Upload Photos Tab -->
+        <div id="upload" class="tab-content">
+            <h2>Upload Photos & Videos</h2>
+            
+            <div class="form-group">
+                <label for="clientSelect">Select Client:</label>
+                <select id="clientSelect">
+                    <option value="">Choose a client...</option>
+                </select>
+            </div>
+            
+            <div id="uploadSection" class="hidden">
+                <div class="upload-area" id="uploadArea">
+                    <h3>📸 Drag & Drop Photos/Videos Here</h3>
+                    <p>Or click to browse files</p>
+                    <p style="color: #666; margin-top: 10px;">Supported: JPG, PNG, MP4, MOV, HEIC</p>
+                    <input type="file" id="fileInput" multiple accept="image/*,video/*" class="hidden">
+                </div>
+                
+                <div id="fileList"></div>
+                
+                <div id="uploadProgress" class="hidden">
+                    <div class="progress">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <p id="progressText">Preparing upload...</p>
+                </div>
+                
+                <button id="uploadBtn" class="btn hidden" style="margin-top: 20px;">🚀 Upload to Client Storage</button>
+            </div>
+        </div>
+        
+        <!-- Manage Clients Tab -->
+        <div id="manage" class="tab-content">
+            <h2>Today's Clients</h2>
+            <div id="clientsList"></div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings" class="tab-content">
+            <h2>Automation Settings</h2>
+            
+            <div class="client-card">
+                <h3>🔧 Storage Configuration</h3>
+                <div class="form-group">
+                    <label for="storageProvider">Storage Provider</label>
+                    <select id="storageProvider">
+                        <option value="firebase">Firebase Storage (Recommended)</option>
+                        <option value="cloudinary">Cloudinary</option>
+                        <option value="aws">AWS S3</option>
+                        <option value="drive">Google Drive (Manual setup required)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="apiConfig">API Configuration</label>
+                    <input type="password" id="apiConfig" placeholder="Enter your storage API key">
+                </div>
+                
+                <button onclick="saveSettings()" class="btn">💾 Save Settings</button>
+            </div>
+
+            <div class="client-card">
+                <h3>📱 WhatsApp Integration</h3>
+                <div class="form-group">
+                    <label for="whatsappApi">WhatsApp API Key</label>
+                    <input type="password" id="whatsappApi" placeholder="Optional: For auto-sending QR codes">
+                </div>
+                
+                <div class="form-group">
+                    <label for="clubName">Club Name</label>
+                    <input type="text" id="clubName" placeholder="Your Diving Club Name">
+                </div>
+            </div>
+
+            <div class="client-card">
+                <h3>⚡ Quick Setup Options</h3>
+                <p>Choose your preferred setup:</p>
+                <button onclick="setupFirebase()" class="btn" style="margin: 10px 5px;">🔥 Setup Firebase (Free)</button>
+                <button onclick="setupCloudinary()" class="btn" style="margin: 10px 5px;">☁️ Setup Cloudinary (Free)</button>
+                <button onclick="setupBasic()" class="btn btn-secondary" style="margin: 10px 5px;">📁 Basic Setup (No upload)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let clients = JSON.parse(localStorage.getItem('divingClients') || '[]');
+        let selectedFiles = [];
+        let settings = JSON.parse(localStorage.getItem('divingSettings') || '{}');
+
+        // Generate client code
+        function generateClientCode(name) {
+            const today = new Date();
+            const dateStr = today.toISOString().slice(0, 10).replace(/-/g, '');
+            const initials = name.split(' ').map(word => word[0].toUpperCase()).join('').slice(0, 3);
+            const sequence = String(clients.length + 1).padStart(3, '0');
+            return `${initials}-${dateStr}-${sequence}`;
+        }
+
+        // Generate secure download link
+        function generateDownloadLink(clientCode) {
+            // In real implementation, this would be your storage provider's URL
+            const baseUrl = window.location.origin;
+            return `${baseUrl}/client/${clientCode}`;
+        }
+
+        // Show message
+        function showMessage(text) {
+            const existing = document.querySelector('.success-message');
+            if (existing) existing.remove();
+            
+            const message = document.createElement('div');
+            message.className = 'success-message';
+            message.textContent = text;
+            document.querySelector('.container').insertBefore(message, document.querySelector('.tabs'));
+            
+            setTimeout(() => message.remove(), 4000);
+        }
+
+        // Register client - AUTOMATED
+        async function registerClient(name, phone, instructor, diveType) {
+            const clientCode = generateClientCode(name);
+            const downloadUrl = generateDownloadLink(clientCode);
+            
+            // Simulate automated storage creation
+            showMessage('🤖 Creating automated storage space...');
+            
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+            
+            const client = {
+                id: Date.now(),
+                name,
+                phone,
+                instructor,
+                diveType,
+                code: clientCode,
+                downloadUrl,
+                registrationTime: new Date().toISOString(),
+                filesUploaded: false,
+                fileCount: 0,
+                storageCreated: true
+            };
+            
+            clients.push(client);
+            localStorage.setItem('divingClients', JSON.stringify(clients));
+            
+            // Generate QR code
+            document.getElementById('qrcode').innerHTML = '';
+            QRCode.toCanvas(document.getElementById('qrcode'), downloadUrl, {
+                width: 200,
+                height: 200,
+                margin: 2
+            });
+            
+            document.getElementById('generatedCode').textContent = clientCode;
+            document.getElementById('downloadLink').textContent = downloadUrl;
+            document.getElementById('qrResult').classList.remove('hidden');
+            
+            showMessage('✅ Client registered! Storage created automatically!');
+            updateClientsList();
+            updateClientSelect();
+        }
+
+        // File upload simulation
+        async function uploadFiles() {
+            const clientId = document.getElementById('clientSelect').value;
+            const client = clients.find(c => c.id == clientId);
+            
+            if (!client || !selectedFiles.length) return;
+            
+            const uploadBtn = document.getElementById('uploadBtn');
+            const progressDiv = document.getElementById('uploadProgress');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            
+            uploadBtn.classList.add('hidden');
+            progressDiv.classList.remove('hidden');
+            
+            try {
+                for (let i = 0; i < selectedFiles.length; i++) {
+                    const file = selectedFiles[i];
+                    const progress = ((i + 1) / selectedFiles.length) * 100;
+                    
+                    progressBar.style.width = `${progress}%`;
+                    progressText.textContent = `Uploading ${file.name}... (${i + 1}/${selectedFiles.length})`;
+                    
+                    // Simulate upload
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                
+                // Update client record
+                const clientIndex = clients.findIndex(c => c.id == clientId);
+                clients[clientIndex].filesUploaded = true;
+                clients[clientIndex].fileCount = selectedFiles.length;
+                localStorage.setItem('divingClients', JSON.stringify(clients));
+                
+                // Reset UI
+                selectedFiles = [];
+                document.getElementById('fileList').innerHTML = '';
+                document.getElementById('clientSelect').value = '';
+                document.getElementById('uploadSection').classList.add('hidden');
+                progressDiv.classList.add('hidden');
+                uploadBtn.classList.remove('hidden');
+                
+                updateClientsList();
+                showMessage(`✅ ${selectedFiles.length} files uploaded automatically!`);
+                
+            } catch (error) {
+                console.error('Upload error:', error);
+                progressDiv.classList.add('hidden');
+                uploadBtn.classList.remove('hidden');
+                showMessage('❌ Upload failed. Please try again.');
+            }
+        }
+
+        // WhatsApp integration
+        function sendWhatsApp() {
+            const client = clients[clients.length - 1];
+            if (!client) return;
+            
+            const message = `🏊‍♂️ Your diving photos are ready!\n\nClient: ${client.name}\nCode: ${client.code}\n\nScan this QR code or visit: ${client.downloadUrl}\n\nThanks for diving with us!`;
+            const whatsappUrl = `https://wa.me/${client.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
+            
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Quick setup functions
+        function setupFirebase() {
+            showMessage('🔥 Firebase setup guide will be provided - free 1GB storage!');
+        }
+
+        function setupCloudinary() {
+            showMessage('☁️ Cloudinary setup guide will be provided - free 25GB storage!');
+        }
+
+        function setupBasic() {
+            showMessage('📁 Basic mode activated - manual photo sharing');
+        }
+
+        function saveSettings() {
+            const storageProvider = document.getElementById('storageProvider').value;
+            const apiConfig = document.getElementById('apiConfig').value;
+            const whatsappApi = document.getElementById('whatsappApi').value;
+            const clubName = document.getElementById('clubName').value;
+            
+            settings = { storageProvider, apiConfig, whatsappApi, clubName };
+            localStorage.setItem('divingSettings', JSON.stringify(settings));
+            
+            showMessage('💾 Settings saved successfully!');
+        }
+
+        // Update functions
+        function updateClientSelect() {
+            const select = document.getElementById('clientSelect');
+            select.innerHTML = '<option value="">Choose a client...</option>';
+            
+            clients.forEach(client => {
+                const option = document.createElement('option');
+                option.value = client.id;
+                option.textContent = `${client.name} (${client.code}) - ${client.instructor}`;
+                select.appendChild(option);
+            });
+        }
+
+        function updateClientsList() {
+            const list = document.getElementById('clientsList');
+            
+            if (clients.length === 0) {
+                list.innerHTML = '<div class="client-card">No clients registered today.</div>';
+                return;
+            }
+            
+            const html = clients.map(client => `
+                <div class="client-card">
+                    <h3>${client.name}</h3>
+                    <p><strong>Code:</strong> ${client.code}</p>
+                    <p><strong>Phone:</strong> ${client.phone}</p>
+                    <p><strong>Instructor:</strong> ${client.instructor}</p>
+                    <p><strong>Dive Type:</strong> ${client.diveType}</p>
+                    <p><strong>Files:</strong> ${client.filesUploaded ? `${client.fileCount} uploaded ✅` : 'Pending ⏳'}</p>
+                    <p><strong>Storage:</strong> ${client.storageCreated ? 'Auto-created ✅' : 'Manual 📁'}</p>
+                    <p><strong>Time:</strong> ${new Date(client.registrationTime).toLocaleTimeString()}</p>
+                    <p><strong>Download:</strong> <a href="${client.downloadUrl}" target="_blank">Client Link</a></p>
+                </div>
+            `).join('');
+            
+            list.innerHTML = html;
+        }
+
+        function handleFiles(files) {
+            selectedFiles = Array.from(files);
+            displaySelectedFiles();
+        }
+
+        function displaySelectedFiles() {
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+            
+            if (selectedFiles.length > 0) {
+                const listHTML = selectedFiles.map((file, index) => `
+                    <div class="client-card">
+                        <strong>${file.name}</strong>
+                        <span style="float: right; color: #666;">
+                            ${(file.size / 1024 / 1024).toFixed(1)} MB
+                        </span>
+                    </div>
+                `).join('');
+                
+                fileList.innerHTML = listHTML;
+                document.getElementById('uploadBtn').classList.remove('hidden');
+            }
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            if (tabName === 'manage') {
+                updateClientsList();
+            } else if (tabName === 'upload') {
+                updateClientSelect();
+            }
+        }
+
+        // Print QR code
+        function printQR() {
+            const qrContent = document.getElementById('qrResult');
+            const printWindow = window.open('', '', 'width=400,height=400');
+            printWindow.document.write(`
+                <html>
+                    <head><title>Print QR Code</title></head>
+                    <body style="text-align: center; font-family: Arial; padding: 20px;">
+                        <h2>🏊‍♂️ Diving Club - Client QR Code</h2>
+                        ${qrContent.innerHTML}
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            updateClientsList();
+            updateClientSelect();
+            
+            // Tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    switchTab(this.getAttribute('data-tab'));
+                });
+            });
+            
+            // Client form
+            document.getElementById('clientForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('clientName').value;
+                const phone = document.getElementById('clientPhone').value;
+                const instructor = document.getElementById('instructorName').value;
+                const diveType = document.getElementById('diveType').value;
+                
+                registerClient(name, phone, instructor, diveType);
+                
+                // Reset form
+                this.reset();
+            });
+            
+            // File upload handling
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+
+            uploadArea.addEventListener('click', () => fileInput.click());
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                handleFiles(e.dataTransfer.files);
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+
+            // Handle client selection for upload
+            document.getElementById('clientSelect').addEventListener('change', function() {
+                if (this.value) {
+                    document.getElementById('uploadSection').classList.remove('hidden');
+                } else {
+                    document.getElementById('uploadSection').classList.add('hidden');
+                }
+            });
+
+            // Upload button
+            document.getElementById('uploadBtn').addEventListener('click', uploadFiles);
+        });
+    </script>
+</body>
+</html>

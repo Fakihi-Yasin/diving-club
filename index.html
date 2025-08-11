@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,29 +13,29 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
-        
+
         .container {
             max-width: 1100px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
             padding: 40px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
         }
-        
+
         .header {
             text-align: center;
             margin-bottom: 50px;
             color: #333;
         }
-        
+
         .header h1 {
             font-size: 3rem;
             margin-bottom: 15px;
@@ -43,12 +44,12 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
+
         .header p {
             font-size: 1.2rem;
             color: #666;
         }
-        
+
         .tabs {
             display: flex;
             justify-content: center;
@@ -56,7 +57,7 @@
             border-bottom: 3px solid #f0f0f0;
             overflow-x: auto;
         }
-        
+
         .tab {
             padding: 20px 30px;
             cursor: pointer;
@@ -69,36 +70,43 @@
             transition: all 0.3s ease;
             white-space: nowrap;
         }
-        
+
         .tab.active {
             color: #667eea;
             border-bottom-color: #667eea;
             background: rgba(102, 126, 234, 0.05);
         }
-        
+
         .tab:hover {
             color: #667eea;
             background: rgba(102, 126, 234, 0.05);
         }
-        
+
         .tab-content {
             display: none;
         }
-        
+
         .tab-content.active {
             display: block;
             animation: fadeIn 0.3s ease;
         }
-        
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
+
         .form-group {
             margin-bottom: 25px;
         }
-        
+
         .form-group label {
             display: block;
             margin-bottom: 10px;
@@ -106,8 +114,9 @@
             color: #333;
             font-size: 1rem;
         }
-        
-        .form-group input, .form-group select {
+
+        .form-group input,
+        .form-group select {
             width: 100%;
             padding: 15px;
             border: 2px solid #e1e8ed;
@@ -116,14 +125,15 @@
             transition: all 0.3s ease;
             background: #fafbfc;
         }
-        
-        .form-group input:focus, .form-group select:focus {
+
+        .form-group input:focus,
+        .form-group select:focus {
             border-color: #667eea;
             outline: none;
             background: white;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
-        
+
         .btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -138,25 +148,25 @@
             align-items: center;
             gap: 8px;
         }
-        
+
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
         }
-        
+
         .btn-success {
             background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
         }
-        
+
         .btn-primary {
             background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
         }
-        
+
         .btn-warning {
             background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
             color: #333;
         }
-        
+
         .qr-display {
             text-align: center;
             margin-top: 40px;
@@ -165,26 +175,26 @@
             border-radius: 20px;
             border: 3px dashed #667eea;
         }
-        
+
         .client-card {
             background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
             border: 1px solid #e1e8ed;
             border-radius: 16px;
             padding: 25px;
             margin-bottom: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
         }
-        
+
         .client-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
         }
-        
+
         .hidden {
             display: none;
         }
-        
+
         .success-message {
             background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
             color: #155724;
@@ -195,27 +205,27 @@
             border: 1px solid #c3e6cb;
             font-weight: 600;
         }
-        
+
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 25px;
         }
-        
+
         @media (max-width: 768px) {
             .grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .container {
                 padding: 20px;
             }
-            
+
             .header h1 {
                 font-size: 2rem;
             }
         }
-        
+
         .upload-zone {
             border: 3px dashed #667eea;
             border-radius: 16px;
@@ -226,26 +236,26 @@
             transition: all 0.3s ease;
             margin: 20px 0;
         }
-        
+
         .upload-zone:hover {
             background: linear-gradient(135deg, #f0f4ff 0%, #e8f0ff 100%);
             border-color: #4169e1;
             transform: scale(1.02);
         }
-        
+
         .upload-zone.dragover {
             background: linear-gradient(135deg, #e8f0ff 0%, #d6e8ff 100%);
             border-color: #4169e1;
             transform: scale(1.05);
         }
-        
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
-        
+
         .stat-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -253,18 +263,18 @@
             border-radius: 16px;
             text-align: center;
         }
-        
+
         .stat-number {
             font-size: 2.5rem;
             font-weight: bold;
             margin-bottom: 5px;
         }
-        
+
         .stat-label {
             font-size: 0.9rem;
             opacity: 0.9;
         }
-        
+
         .connection-status {
             background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
             color: white;
@@ -276,19 +286,19 @@
             font-weight: 600;
             margin-bottom: 20px;
         }
-        
+
         .connection-status.connected {
             background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
         }
-        
+
         .progress-container {
             background: white;
             border-radius: 12px;
             padding: 25px;
             margin: 20px 0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
-        
+
         .progress-bar {
             width: 100%;
             height: 25px;
@@ -297,7 +307,7 @@
             overflow: hidden;
             margin: 15px 0;
         }
-        
+
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #28a745, #20c997);
@@ -305,14 +315,14 @@
             transition: width 0.3s ease;
             border-radius: 12px;
         }
-        
+
         .action-buttons {
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
             margin-top: 20px;
         }
-        
+
         .iframe-container {
             width: 100%;
             height: 0;
@@ -321,9 +331,9 @@
             margin: 20px 0;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
-        
+
         .iframe-container iframe {
             position: absolute;
             top: 0;
@@ -332,18 +342,19 @@
             height: 100%;
             border: none;
         }
-        
+
         @media (max-width: 600px) {
             .action-buttons {
                 flex-direction: column;
             }
-            
+
             .action-buttons .btn {
                 justify-content: center;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -355,7 +366,7 @@
             <span>❌</span>
             <span>Google Services: Connecting...</span>
         </div>
-        
+
         <div class="tabs">
             <button class="tab active" data-tab="register">📝 Register Client</button>
             <button class="tab" data-tab="upload">📸 Upload Photos</button>
@@ -363,24 +374,24 @@
             <button class="tab" data-tab="qr">🔳 QR Codes</button>
             <button class="tab" data-tab="sheets">📋 Google Form</button>
         </div>
-        
+
         <!-- Register Client Tab -->
         <div id="register" class="tab-content active">
             <h2 style="margin-bottom: 30px; color: #333;">Register New Client</h2>
-            
+
             <form id="clientForm">
                 <div class="grid">
                     <div class="form-group">
                         <label for="clientName">👤 Client Name</label>
                         <input type="text" id="clientName" required placeholder="e.g., Ahmed Hassan">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="clientPhone">📱 Phone Number</label>
                         <input type="tel" id="clientPhone" required placeholder="e.g., +1234567890">
                     </div>
                 </div>
-                
+
                 <div class="grid">
                     <div class="form-group">
                         <label for="instructorName">🤿 Assigned Instructor</label>
@@ -409,18 +420,19 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <button type="submit" class="btn btn-success" style="font-size: 1.2em; padding: 18px 40px;">
                     🚀 Create Client & Generate QR Code
                 </button>
             </form>
-            
+
             <div id="qrResult" class="qr-display hidden">
                 <h3 style="margin-bottom: 20px;">✅ Client Successfully Registered!</h3>
                 <div id="qrcode" style="margin: 20px 0;"></div>
-                <p><strong>Client Code:</strong> <span id="generatedCode" style="font-size: 1.2em; color: #667eea;"></span></p>
+                <p><strong>Client Code:</strong> <span id="generatedCode"
+                        style="font-size: 1.2em; color: #667eea;"></span></p>
                 <p><strong>Drive Folder:</strong> <a href="#" id="folderLink" target="_blank">📁 Open Folder</a></p>
-                
+
                 <div class="action-buttons">
                     <button onclick="printQR()" class="btn">🖨️ Print QR Code</button>
                     <button onclick="downloadQR()" class="btn btn-primary">📥 Download QR</button>
@@ -433,14 +445,14 @@
         <!-- Upload Photos Tab -->
         <div id="upload" class="tab-content">
             <h2 style="margin-bottom: 30px; color: #333;">Upload Photos to Client Folders</h2>
-            
+
             <div class="form-group">
                 <label for="clientSelect">Select Client from Database:</label>
                 <select id="clientSelect">
                     <option value="">Choose a client...</option>
                 </select>
             </div>
-            
+
             <div id="uploadZone" class="upload-zone hidden">
                 <div style="font-size: 3rem; margin-bottom: 15px;">📸</div>
                 <h3>Drop Photos Here for <span id="selectedClientName" style="color: #667eea;"></span></h3>
@@ -448,7 +460,7 @@
                 <p style="color: #888; font-size: 0.9em;">Supports: JPG, PNG, HEIC, MP4, MOV</p>
                 <input type="file" id="fileInput" multiple accept="image/*,video/*" class="hidden">
             </div>
-            
+
             <div id="uploadProgress" class="progress-container hidden">
                 <h3>🚀 Uploading to Google Drive...</h3>
                 <div class="progress-bar">
@@ -457,11 +469,11 @@
                 <p id="progressText">Preparing upload...</p>
             </div>
         </div>
-        
+
         <!-- Dashboard Tab -->
         <div id="manage" class="tab-content">
             <h2 style="margin-bottom: 30px; color: #333;">Dashboard & Analytics</h2>
-            
+
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-number" id="totalClients">0</div>
@@ -480,14 +492,14 @@
                     <div class="stat-label">Active Folders</div>
                 </div>
             </div>
-            
+
             <div style="display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
                 <button onclick="refreshData()" class="btn btn-primary">🔄 Refresh Data</button>
                 <button onclick="exportData()" class="btn">📊 Export Report</button>
                 <button onclick="openSheet()" class="btn btn-success">📋 Open Google Sheet</button>
                 <button onclick="testGoogleForm()" class="btn btn-warning">🧪 Test Google Form</button>
             </div>
-            
+
             <h3 style="margin-bottom: 20px;">Recent Clients</h3>
             <div id="clientsList"></div>
         </div>
@@ -495,42 +507,45 @@
         <!-- QR Codes Tab -->
         <div id="qr" class="tab-content">
             <h2 style="margin-bottom: 30px; color: #333;">QR Code Management</h2>
-            
+
             <div class="client-card">
                 <h3>🔳 Generate QR Codes for Existing Clients</h3>
-                <p style="margin: 15px 0; color: #666;">Select a client to regenerate their QR code or view existing ones.</p>
-                
+                <p style="margin: 15px 0; color: #666;">Select a client to regenerate their QR code or view existing
+                    ones.</p>
+
                 <div class="form-group">
                     <label for="qrClientSelect">Select Client:</label>
                     <select id="qrClientSelect">
                         <option value="">Choose a client...</option>
                     </select>
                 </div>
-                
+
                 <div class="action-buttons">
                     <button onclick="generateQRForClient()" class="btn">🔳 Generate QR</button>
                     <button onclick="printAllQRs()" class="btn btn-primary">🖨️ Print All QRs</button>
                     <button onclick="downloadAllQRs()" class="btn btn-warning">📥 Download All</button>
                 </div>
             </div>
-            
+
             <div id="qrGrid" class="stats-grid"></div>
         </div>
 
         <!-- Google Form Tab -->
         <div id="sheets" class="tab-content">
             <h2 style="margin-bottom: 30px; color: #333;">Google Form Integration</h2>
-            
+
             <div class="client-card">
                 <h3>📝 Alternative Registration Method</h3>
-                <p style="margin: 15px 0; color: #666;">Use this Google Form to register clients directly to the Google Sheet (bypasses CORS issues).</p>
-                
+                <p style="margin: 15px 0; color: #666;">Use this Google Form to register clients directly to the Google
+                    Sheet (bypasses CORS issues).</p>
+
                 <div class="iframe-container">
-                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdVvRJwKYFo2E9RyOdNpyN9A9w4_Fw-Z3uGZQHqWvXyWtxY5A/viewform?embedded=true">
+                    <iframe
+                        src="https://docs.google.com/forms/d/e/1FAIpQLSdVvRJwKYFo2E9RyOdNpyN9A9w4_Fw-Z3uGZQHqWvXyWtxY5A/viewform?embedded=true">
                         Loading...
                     </iframe>
                 </div>
-                
+
                 <div class="action-buttons">
                     <button onclick="openGoogleForm()" class="btn btn-primary">📝 Open Full Form</button>
                     <button onclick="openSheet()" class="btn btn-success">📊 View Responses</button>
@@ -540,88 +555,72 @@
         </div>
     </div>
 
-    <script>
-        // Configuration
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx6y1Rveo-3Rh3c7oIMSlfDkYWkYuaKO-4yWzLscW8UR__YVjbPxqIbdCAf8QAckphlBg/exec';
+<script>
+    // Configuration - Updated with your new URL
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbza9rd1li-w2JtIBp2YSOgjhZxg4_IKWYfQGMFxiSCd408maP2YXTAAbh0cz0gcuy_6lw/exec';
 const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1xBvTa1BudwW677lUQ9noT0Fm_iJB38BDaJfQC1WFGbc';
-        const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdVvRJwKYFo2E9RyOdNpyN9A9w4_Fw-Z3uGZQHqWvXyWtxY5A/viewform';
+const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdVvRJwKYFo2E9RyOdNpyN9A9w4_Fw-Z3uGZQHqWvXyWtxY5A/viewform';
 
-        let clients = JSON.parse(localStorage.getItem('divingClients') || '[]');
-        let selectedClient = null;
-        let isGoogleConnected = false;
+let clients = JSON.parse(localStorage.getItem('divingClients') || '[]');
+let selectedClient = null;
+let isGoogleConnected = false;
 
-        // CORS-free approach using form submission
-        function submitToGoogleForm(name, phone, instructor, diveType) {
-            return new Promise((resolve, reject) => {
-                try {
-                    // Create hidden form to submit to Google Form
-                    const form = document.createElement('form');
-                    form.action = 'https://docs.google.com/forms/d/e/1FAIpQLSdVvRJwKYFo2E9RyOdNpyN9A9w4_Fw-Z3uGZQHqWvXyWtxY5A/formResponse';
-                    form.method = 'POST';
-                    form.target = 'hidden_iframe';
-                    form.style.display = 'none';
-
-                    // Create hidden iframe to capture response
-                    const iframe = document.createElement('iframe');
-                    iframe.name = 'hidden_iframe';
-                    iframe.style.display = 'none';
-                    document.body.appendChild(iframe);
-
-                    // Add form fields (replace with your actual Google Form field names)
-                    const fields = [
-                        { name: 'entry.123456789', value: name },
-                        { name: 'entry.987654321', value: phone },
-                        { name: 'entry.456789123', value: instructor },
-                        { name: 'entry.789123456', value: diveType }
-                    ];
-
-                    fields.forEach(field => {
-                        const input = document.createElement('input');
-                        input.type = 'hidden';
-                        input.name = field.name;
-                        input.value = field.value;
-                        form.appendChild(input);
-                    });
-
-                    document.body.appendChild(form);
-                    form.submit();
-
-                    // Clean up
-                    setTimeout(() => {
-                        document.body.removeChild(form);
-                        document.body.removeChild(iframe);
-                        resolve({ success: true });
-                    }, 1000);
-
-                } catch (error) {
-                    reject(error);
-                }
-            });
-        }
-
-        // Replace your registerClient function with this:
-async function registerClient(name, phone, instructor, diveType) {
-    try {
-        showMessage('🤖 Creating client in Google Sheets & Drive...');
+// CORS-free submission function using JSONP
+function submitToGoogleScript(data) {
+    return new Promise((resolve) => {
+        // Create a unique callback function name
+        const callbackName = 'callback_' + Date.now();
         
-        // Call Google Apps Script directly
-        const response = await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                action: 'createClient',
-                data: {
-                    name: name,
-                    phone: phone,
-                    instructor: instructor,
-                    diveType: diveType
-                }
-            })
+        // Create the callback function
+        window[callbackName] = function(response) {
+            resolve(response);
+            // Clean up
+            if (document.head.contains(script)) {
+                document.head.removeChild(script);
+            }
+            delete window[callbackName];
+        };
+        
+        // Create JSONP script tag
+        const script = document.createElement('script');
+        const params = new URLSearchParams({
+            callback: callbackName,
+            action: data.action,
+            name: data.name,
+            phone: data.phone,
+            instructor: data.instructor,
+            diveType: data.diveType
         });
         
-        const result = await response.json();
+        script.src = `${GOOGLE_SCRIPT_URL}?${params.toString()}`;
+        document.head.appendChild(script);
+        
+        // Timeout fallback
+        setTimeout(() => {
+            if (window[callbackName]) {
+                resolve({ success: false, error: 'Timeout' });
+                if (document.head.contains(script)) {
+                    document.head.removeChild(script);
+                }
+                delete window[callbackName];
+            }
+        }, 10000);
+    });
+}
+
+// Main register client function
+async function registerClient(name, phone, instructor, diveType) {
+    showMessage('🚀 Creating client in Google Sheets & Drive...');
+    
+    try {
+        // Use the JSONP method to call Google Script
+        const result = await submitToGoogleScript({
+            action: 'createClient',
+            name: name,
+            phone: phone,
+            instructor: instructor,
+            diveType: diveType
+        });
         
         if (result.success) {
             const client = {
@@ -638,7 +637,6 @@ async function registerClient(name, phone, instructor, diveType) {
                 status: 'Active'
             };
             
-            // Store locally as backup
             clients.push(client);
             localStorage.setItem('divingClients', JSON.stringify(clients));
             selectedClient = client;
@@ -670,19 +668,17 @@ async function registerClient(name, phone, instructor, diveType) {
         
     } catch (error) {
         console.error('Registration error:', error);
-        showMessage('❌ Error: ' + error.message, 'error');
+        showMessage('❌ Google connection failed. Registering locally...', 'warning');
         updateConnectionStatus(false);
-        
-        // Fallback to local registration
         registerClientLocally(name, phone, instructor, diveType);
     }
 }
 
-// Add this fallback function
+// Fallback local registration
 function registerClientLocally(name, phone, instructor, diveType) {
     const clientCode = generateClientCode(name);
     const driveUrl = `https://drive.google.com/drive/folders/example_${clientCode}`;
-    
+
     const client = {
         id: Date.now(),
         name,
@@ -696,11 +692,11 @@ function registerClientLocally(name, phone, instructor, diveType) {
         photosCount: 0,
         status: 'Local'
     };
-    
+
     clients.push(client);
     localStorage.setItem('divingClients', JSON.stringify(clients));
     selectedClient = client;
-    
+
     // Generate QR code
     document.getElementById('qrcode').innerHTML = '';
     QRCode.toCanvas(document.getElementById('qrcode'), driveUrl, {
@@ -708,483 +704,560 @@ function registerClientLocally(name, phone, instructor, diveType) {
         height: 280,
         margin: 3
     });
-    
+
     document.getElementById('generatedCode').textContent = clientCode;
     document.getElementById('folderLink').href = driveUrl;
     document.getElementById('qrResult').classList.remove('hidden');
-    
+
     showMessage('⚠️ Client registered locally. Google connection failed.');
     updateAllSelects();
     updateStats();
 }
-        // Generate client code
-        function generateClientCode(name) {
-            const today = new Date();
-            const dateStr = today.toISOString().slice(0, 10).replace(/-/g, '');
-            const initials = name.split(' ').map(word => word[0].toUpperCase()).join('').slice(0, 3);
-            const sequence = String(clients.length + 1).padStart(3, '0');
-            return `${initials}-${dateStr}-${sequence}`;
-        }
 
-        // Update connection status
-        function updateConnectionStatus(connected) {
-            const status = document.getElementById('connectionStatus');
-            isGoogleConnected = connected;
-            
-            if (connected) {
-                status.innerHTML = '<span>✅</span><span>Google Services: Connected</span>';
-                status.className = 'connection-status connected';
-            } else {
-                status.innerHTML = '<span>⚠️</span><span>Google Services: Local Mode</span>';
-                status.className = 'connection-status';
-            }
-        }
+// Generate client code
+function generateClientCode(name) {
+    const today = new Date();
+    const dateStr = today.toISOString().slice(0, 10).replace(/-/g, '');
+    const initials = name.split(' ').map(word => word[0].toUpperCase()).join('').slice(0, 3);
+    const sequence = String(clients.length + 1).padStart(3, '0');
+    return `${initials}-${dateStr}-${sequence}`;
+}
 
-        // Test Google Form
-        function testGoogleForm() {
-            showMessage('🧪 Testing Google Form submission...');
-            
-            submitToGoogleForm('Test User', '+1234567890', 'Omar', 'discovery')
-                .then(() => {
-                    showMessage('✅ Google Form test successful!');
-                    updateConnectionStatus(true);
-                })
-                .catch((error) => {
-                    showMessage('❌ Google Form test failed: ' + error.message, 'error');
-                    updateConnectionStatus(false);
-                });
-        }
+// Update connection status
+function updateConnectionStatus(connected) {
+    const status = document.getElementById('connectionStatus');
+    isGoogleConnected = connected;
 
-        // Open Google Form
-        function openGoogleForm() {
-            window.open(GOOGLE_FORM_URL, '_blank');
-        }
+    if (connected) {
+        status.innerHTML = '<span>✅</span><span>Google Services: Connected</span>';
+        status.className = 'connection-status connected';
+    } else {
+        status.innerHTML = '<span>⚠️</span><span>Google Services: Local Mode</span>';
+        status.className = 'connection-status';
+    }
+}
 
-        // Refresh from sheet (manual process)
-        function refreshFromSheet() {
-            showMessage('📋 Please manually check the Google Sheet for new entries and add them here if needed.');
-            openSheet();
-        }
-
-        // Handle file uploads
-        function handleFiles(files) {
-            if (!selectedClient) return;
-            
-            const progressDiv = document.getElementById('uploadProgress');
-            const progressFill = document.getElementById('progressFill');
-            const progressText = document.getElementById('progressText');
-            
-            progressDiv.classList.remove('hidden');
-            
-            let uploaded = 0;
-            const total = files.length;
-            
-            const uploadNext = () => {
-                if (uploaded < total) {
-                    const file = files[uploaded];
-                    const progress = ((uploaded + 1) / total) * 100;
-                    
-                    progressFill.style.width = `${progress}%`;
-                    progressText.textContent = `Processing ${file.name}... (${uploaded + 1}/${total})`;
-                    
-                    uploaded++;
-                    setTimeout(uploadNext, 600);
-                } else {
-                    progressText.textContent = `✅ ${total} photos processed!`;
-                    
-                    // Update local count
-                    const clientIndex = clients.findIndex(c => c.id === selectedClient.id);
-                    if (clientIndex !== -1) {
-                        clients[clientIndex].photosCount = (clients[clientIndex].photosCount || 0) + total;
-                        localStorage.setItem('divingClients', JSON.stringify(clients));
-                    }
-                    
-                    setTimeout(() => {
-                        progressDiv.classList.add('hidden');
-                        showMessage(`✅ ${total} photos processed for ${selectedClient.name}!`);
-                        updateStats();
-                    }, 1500);
-                }
-            };
-            
-            uploadNext();
-        }
-
-        // Enhanced message function with types
-        function showMessage(text, type = 'success') {
-            const existing = document.querySelector('.success-message');
-            if (existing) existing.remove();
-            
-            const message = document.createElement('div');
-            message.className = `success-message ${type}`;
-            
-         // Style based on type
-            if (type === 'error') {
-                message.style.background = 'linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%)';
-                message.style.color = '#721c24';
-                message.style.borderColor = '#f5c6cb';
-            } else if (type === 'warning') {
-                message.style.background = 'linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%)';
-                message.style.color = '#856404';
-                message.style.borderColor = '#ffeaa7';
-            }
-            
-            message.textContent = text;
-            document.querySelector('.container').insertBefore(message, document.querySelector('.tabs'));
-            
-            setTimeout(() => message.remove(), 5000);
-        }
-
-        // Update all select dropdowns
-        function updateAllSelects() {
-            updateClientSelect();
-            updateQRClientSelect();
-        }
-
-        function updateClientSelect() {
-            const select = document.getElementById('clientSelect');
-            select.innerHTML = '<option value="">Choose a client...</option>';
-            
-            clients.forEach(client => {
-                const option = document.createElement('option');
-                option.value = client.id;
-                option.textContent = `${client.name} (${client.code}) - ${client.instructor}`;
-                select.appendChild(option);
-            });
-        }
-
-        function updateQRClientSelect() {
-            const select = document.getElementById('qrClientSelect');
-            select.innerHTML = '<option value="">Choose a client...</option>';
-            
-            clients.forEach(client => {
-                const option = document.createElement('option');
-                option.value = client.id;
-                option.textContent = `${client.name} (${client.code})`;
-                select.appendChild(option);
-            });
-        }
-
-        // Update statistics
-        function updateStats() {
-            const today = new Date().toISOString().slice(0, 10);
-            const todayClients = clients.filter(c => c.registrationTime.slice(0, 10) === today);
-            const totalPhotos = clients.reduce((sum, c) => sum + (c.photosCount || 0), 0);
-            
-            document.getElementById('totalClients').textContent = clients.length;
-            document.getElementById('todayClients').textContent = todayClients.length;
-            document.getElementById('photosUploaded').textContent = totalPhotos;
-            document.getElementById('activeFolders').textContent = clients.filter(c => c.status === 'Active').length;
-            
-            updateClientsList();
-        }
-
-        function updateClientsList() {
-            const list = document.getElementById('clientsList');
-            
-            if (clients.length === 0) {
-                list.innerHTML = '<div class="client-card">No clients registered yet.</div>';
-                return;
-            }
-            
-            const recentClients = clients.slice(-5).reverse();
-            const html = recentClients.map(client => `
-                <div class="client-card">
-                    <div style="display: flex; justify-content: space-between; align-items: start; gap: 20px;">
-                        <div style="flex: 1;">
-                            <h3 style="color: #333; margin-bottom: 10px;">${client.name}</h3>
-                            <p><strong>Code:</strong> ${client.code}</p>
-                            <p><strong>Phone:</strong> ${client.phone}</p>
-                            <p><strong>Instructor:</strong> ${client.instructor}</p>
-                            <p><strong>Dive Type:</strong> ${client.diveType}</p>
-                            <p><strong>Photos:</strong> ${client.photosCount || 0} uploaded</p>
-                            <p><strong>Registered:</strong> ${new Date(client.registrationTime).toLocaleString()}</p>
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <a href="${client.driveUrl}" target="_blank" class="btn btn-primary">📁 Open Drive</a>
-                            <button onclick="generateClientQR('${client.id}')" class="btn">🔳 QR Code</button>
-                            <button onclick="sendClientWhatsApp('${client.id}')" class="btn btn-success">📱 WhatsApp</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            
-            list.innerHTML = html;
-        }
-
-        // Utility functions
-        function printQR() {
-            if (!selectedClient) return;
-            
-            const qrCanvas = document.getElementById('qrcode').querySelector('canvas');
-            const printWindow = window.open('', '', 'width=600,height=700');
-            printWindow.document.write(`
-                <html>
-                    <head><title>Diving Club QR Code</title></head>
-                    <body style="text-align: center; font-family: Arial; padding: 20px;">
-                        <h1>🏊‍♂️ Diving Club Photos</h1>
-                        <h2>${selectedClient.name}</h2>
-                        <p><strong>Code:</strong> ${selectedClient.code}</p>
-                        <p><strong>Instructor:</strong> ${selectedClient.instructor}</p>
-                        <div style="margin: 30px 0;">
-                            <img src="${qrCanvas.toDataURL()}" style="max-width: 300px;">
-                        </div>
-                        <h3>Scan to access your diving photos!</h3>
-                        <p style="margin-top: 30px; font-size: 0.9em; color: #666;">
-                            ${selectedClient.driveUrl}
-                        </p>
-                    </body>
-                </html>
-            `);
-            printWindow.document.close();
-            printWindow.print();
-        }
-
-        function downloadQR() {
-            if (!selectedClient) return;
-            
-            const qrCanvas = document.getElementById('qrcode').querySelector('canvas');
-            const link = document.createElement('a');
-            link.download = `${selectedClient.code}_QR_Code.png`;
-            link.href = qrCanvas.toDataURL();
-            link.click();
-        }
-
-        function sendWhatsApp() {
-            if (!selectedClient) return;
-            
-            const message = `🏊‍♂️ Hi ${selectedClient.name}!\n\nYour diving photos are ready! 📸\n\n📱 Scan the QR code or visit:\n${selectedClient.driveUrl}\n\n🤿 Instructor: ${selectedClient.instructor}\n🌊 Dive: ${selectedClient.diveType}\n\nThanks for diving with us!`;
-            const whatsappUrl = `https://wa.me/${selectedClient.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
-            
-            window.open(whatsappUrl, '_blank');
-        }
-
-        function openSheet() {
-            window.open(GOOGLE_SHEET_URL, '_blank');
-        }
-
-        function refreshData() {
-            showMessage('🔄 Refreshing local data...');
-            setTimeout(() => {
-                updateStats();
-                updateAllSelects();
-                showMessage('✅ Local data refreshed!');
-            }, 1000);
-        }
-
-        function exportData() {
-            const csvContent = "data:text/csv;charset=utf-8," + 
-                "Name,Phone,Instructor,Code,Drive URL,Photos,Registration Date\n" +
-                clients.map(c => 
-                    `"${c.name}","${c.phone}","${c.instructor}","${c.code}","${c.driveUrl}","${c.photosCount || 0}","${new Date(c.registrationTime).toLocaleDateString()}"`
-                ).join('\n');
-            
-            const link = document.createElement('a');
-            link.setAttribute('href', encodeURI(csvContent));
-            link.setAttribute('download', `diving_club_report_${new Date().toISOString().slice(0,10)}.csv`);
-            link.click();
-        }
-
-        // Tab switching
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            document.getElementById(tabName).classList.add('active');
-            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-            
-            if (tabName === 'manage') {
-                updateStats();
-            } else if (tabName === 'qr') {
-                updateQRClientSelect();
-            }
-        }
-
-        // Generate QR for specific client
-        function generateClientQR(clientId) {
-            const client = clients.find(c => c.id == clientId);
-            if (!client) return;
-            
-            selectedClient = client;
-            
-            // Switch to QR tab
-            switchTab('qr');
-            
-            // Generate QR code
-            const qrGrid = document.getElementById('qrGrid');
-            qrGrid.innerHTML = `
-                <div class="client-card" style="grid-column: 1 / -1;">
-                    <h3>QR Code for ${client.name}</h3>
-                    <div style="text-align: center; margin: 20px 0;">
-                        <canvas id="clientQRCanvas"></canvas>
-                    </div>
-                    <p><strong>Code:</strong> ${client.code}</p>
-                    <p><strong>Drive URL:</strong> <a href="${client.driveUrl}" target="_blank">${client.driveUrl}</a></p>
-                    <div class="action-buttons">
-                        <button onclick="printClientQR('${client.id}')" class="btn">🖨️ Print</button>
-                        <button onclick="downloadClientQR('${client.id}')" class="btn btn-primary">📥 Download</button>
-                        <button onclick="sendClientWhatsApp('${client.id}')" class="btn btn-success">📱 WhatsApp</button>
-                    </div>
-                </div>
-            `;
-            
-            // Generate QR code
-            QRCode.toCanvas(document.getElementById('clientQRCanvas'), client.driveUrl, {
-                width: 280,
-                height: 280,
-                margin: 3
-            });
-        }
-
-        function sendClientWhatsApp(clientId) {
-            const client = clients.find(c => c.id == clientId);
-            if (!client) return;
-            
-            const message = `🏊‍♂️ Hi ${client.name}!\n\nYour diving photos are ready! 📸\n\n📱 Scan the QR code or visit:\n${client.driveUrl}\n\n🤿 Instructor: ${client.instructor}\n🌊 Dive: ${client.diveType}\n\nThanks for diving with us!`;
-            const whatsappUrl = `https://wa.me/${client.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
-            
-            window.open(whatsappUrl, '_blank');
-        }
-
-        // Generate QR for selected client from dropdown
-        function generateQRForClient() {
-            const select = document.getElementById('qrClientSelect');
-            const clientId = select.value;
-            
-            if (!clientId) {
-                showMessage('⚠️ Please select a client first', 'warning');
-                return;
-            }
-            
-            generateClientQR(clientId);
-        }
-
-        // Placeholder functions for buttons that aren't implemented yet
-        function printAllQRs() {
-            showMessage('🔄 Print All QRs feature coming soon!', 'warning');
-        }
-
-        function downloadAllQRs() {
-            showMessage('🔄 Download All QRs feature coming soon!', 'warning');
-        }
-
-        function printClientQR(clientId) {
-            const client = clients.find(c => c.id == clientId);
-            if (!client) return;
-            
-            const qrCanvas = document.getElementById('clientQRCanvas');
-            const printWindow = window.open('', '', 'width=600,height=700');
-            printWindow.document.write(`
-                <html>
-                    <head><title>Diving Club QR Code - ${client.name}</title></head>
-                    <body style="text-align: center; font-family: Arial; padding: 20px;">
-                        <h1>🏊‍♂️ Diving Club Photos</h1>
-                        <h2>${client.name}</h2>
-                        <p><strong>Code:</strong> ${client.code}</p>
-                        <p><strong>Instructor:</strong> ${client.instructor}</p>
-                        <div style="margin: 30px 0;">
-                            <img src="${qrCanvas.toDataURL()}" style="max-width: 300px;">
-                        </div>
-                        <h3>Scan to access your diving photos!</h3>
-                        <p style="margin-top: 30px; font-size: 0.9em; color: #666;">
-                            ${client.driveUrl}
-                        </p>
-                    </body>
-                </html>
-            `);
-            printWindow.document.close();
-            printWindow.print();
-        }
-
-        function downloadClientQR(clientId) {
-            const client = clients.find(c => c.id == clientId);
-            if (!client) return;
-            
-            const qrCanvas = document.getElementById('clientQRCanvas');
-            const link = document.createElement('a');
-            link.download = `${client.code}_QR_Code.png`;
-            link.href = qrCanvas.toDataURL();
-            link.click();
-        }
-
-        // Initialize everything when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            updateAllSelects();
-            updateStats();
+// Test Google Script connection
+function testGoogleScript() {
+    showMessage('🧪 Testing Google Script connection...');
+    
+    submitToGoogleScript({
+        action: 'test',
+        name: 'Test',
+        phone: 'Test',
+        instructor: 'Test',
+        diveType: 'Test'
+    })
+    .then((result) => {
+        if (result.success) {
+            showMessage('✅ Google Script connection successful!');
+            updateConnectionStatus(true);
+        } else {
+            showMessage('❌ Google Script test failed: ' + (result.error || 'Unknown error'), 'error');
             updateConnectionStatus(false);
-            
-            // Test Google Form connection
+        }
+    })
+    .catch((error) => {
+        showMessage('❌ Connection failed: ' + error.message, 'error');
+        updateConnectionStatus(false);
+    });
+}
+
+// CORS-free approach using form submission (backup method)
+function submitToGoogleForm(name, phone, instructor, diveType) {
+    return new Promise((resolve, reject) => {
+        try {
+            // Create hidden form to submit to Google Form
+            const form = document.createElement('form');
+            form.action = 'https://docs.google.com/forms/d/e/1FAIpQLSdVvRJwKYFo2E9RyOdNpyN9A9w4_Fw-Z3uGZQHqWvXyWtxY5A/formResponse';
+            form.method = 'POST';
+            form.target = 'hidden_iframe';
+            form.style.display = 'none';
+
+            // Create hidden iframe to capture response
+            const iframe = document.createElement('iframe');
+            iframe.name = 'hidden_iframe';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+
+            // Add form fields (replace with your actual Google Form field names)
+            const fields = [
+                { name: 'entry.123456789', value: name },
+                { name: 'entry.987654321', value: phone },
+                { name: 'entry.456789123', value: instructor },
+                { name: 'entry.789123456', value: diveType }
+            ];
+
+            fields.forEach(field => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = field.name;
+                input.value = field.value;
+                form.appendChild(input);
+            });
+
+            document.body.appendChild(form);
+            form.submit();
+
+            // Clean up
             setTimeout(() => {
-                testGoogleForm();
+                document.body.removeChild(form);
+                document.body.removeChild(iframe);
+                resolve({ success: true });
             }, 1000);
-            
-            // Tab switching
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    switchTab(this.getAttribute('data-tab'));
-                });
-            });
-            
-            // Client form
-            document.getElementById('clientForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const name = document.getElementById('clientName').value;
-                const phone = document.getElementById('clientPhone').value;
-                const instructor = document.getElementById('instructorName').value;
-                const diveType = document.getElementById('diveType').value;
-                
-                registerClient(name, phone, instructor, diveType);
-                
-                // Reset form
-                this.reset();
-            });
-            
-            // Client selection for upload
-            document.getElementById('clientSelect').addEventListener('change', function() {
-                const clientId = this.value;
-                const client = clients.find(c => c.id == clientId);
-                
-                if (client) {
-                    selectedClient = client;
-                    document.getElementById('selectedClientName').textContent = client.name;
-                    document.getElementById('uploadZone').classList.remove('hidden');
-                } else {
-                    document.getElementById('uploadZone').classList.add('hidden');
-                }
-            });
-            
-            // File upload
-            const uploadZone = document.getElementById('uploadZone');
-            const fileInput = document.getElementById('fileInput');
-            
-            if (uploadZone && fileInput) {
-                uploadZone.addEventListener('click', () => fileInput.click());
-                
-                uploadZone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    uploadZone.classList.add('dragover');
-                });
-                
-                uploadZone.addEventListener('dragleave', () => {
-                    uploadZone.classList.remove('dragover');
-                });
-                
-                uploadZone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    uploadZone.classList.remove('dragover');
-                    handleFiles(e.dataTransfer.files);
-                });
-                
-                fileInput.addEventListener('change', (e) => {
-                    handleFiles(e.target.files);
-                });
-            }
+
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+// Test Google Form
+function testGoogleForm() {
+    showMessage('🧪 Testing Google Form submission...');
+
+    submitToGoogleForm('Test User', '+1234567890', 'Omar', 'discovery')
+        .then(() => {
+            showMessage('✅ Google Form test successful!');
+            updateConnectionStatus(true);
+        })
+        .catch((error) => {
+            showMessage('❌ Google Form test failed: ' + error.message, 'error');
+            updateConnectionStatus(false);
         });
-    </script>
+}
+
+// Open Google Form
+function openGoogleForm() {
+    window.open(GOOGLE_FORM_URL, '_blank');
+}
+
+// Refresh from sheet (manual process)
+function refreshFromSheet() {
+    showMessage('📋 Please manually check the Google Sheet for new entries and add them here if needed.');
+    openSheet();
+}
+
+// Handle file uploads
+function handleFiles(files) {
+    if (!selectedClient) return;
+
+    const progressDiv = document.getElementById('uploadProgress');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+
+    progressDiv.classList.remove('hidden');
+
+    let uploaded = 0;
+    const total = files.length;
+
+    const uploadNext = () => {
+        if (uploaded < total) {
+            const file = files[uploaded];
+            const progress = ((uploaded + 1) / total) * 100;
+
+            progressFill.style.width = `${progress}%`;
+            progressText.textContent = `Processing ${file.name}... (${uploaded + 1}/${total})`;
+
+            uploaded++;
+            setTimeout(uploadNext, 600);
+        } else {
+            progressText.textContent = `✅ ${total} photos processed!`;
+
+            // Update local count
+            const clientIndex = clients.findIndex(c => c.id === selectedClient.id);
+            if (clientIndex !== -1) {
+                clients[clientIndex].photosCount = (clients[clientIndex].photosCount || 0) + total;
+                localStorage.setItem('divingClients', JSON.stringify(clients));
+            }
+
+            setTimeout(() => {
+                progressDiv.classList.add('hidden');
+                showMessage(`✅ ${total} photos processed for ${selectedClient.name}!`);
+                updateStats();
+            }, 1500);
+        }
+    };
+
+    uploadNext();
+}
+
+// Enhanced message function with types
+function showMessage(text, type = 'success') {
+    const existing = document.querySelector('.success-message');
+    if (existing) existing.remove();
+
+    const message = document.createElement('div');
+    message.className = `success-message ${type}`;
+
+    // Style based on type
+    if (type === 'error') {
+        message.style.background = 'linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%)';
+        message.style.color = '#721c24';
+        message.style.borderColor = '#f5c6cb';
+    } else if (type === 'warning') {
+        message.style.background = 'linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%)';
+        message.style.color = '#856404';
+        message.style.borderColor = '#ffeaa7';
+    }
+
+    message.textContent = text;
+    document.querySelector('.container').insertBefore(message, document.querySelector('.tabs'));
+
+    setTimeout(() => message.remove(), 5000);
+}
+
+// Update all select dropdowns
+function updateAllSelects() {
+    updateClientSelect();
+    updateQRClientSelect();
+}
+
+function updateClientSelect() {
+    const select = document.getElementById('clientSelect');
+    select.innerHTML = '<option value="">Choose a client...</option>';
+
+    clients.forEach(client => {
+        const option = document.createElement('option');
+        option.value = client.id;
+        option.textContent = `${client.name} (${client.code}) - ${client.instructor}`;
+        select.appendChild(option);
+    });
+}
+
+function updateQRClientSelect() {
+    const select = document.getElementById('qrClientSelect');
+    select.innerHTML = '<option value="">Choose a client...</option>';
+
+    clients.forEach(client => {
+        const option = document.createElement('option');
+        option.value = client.id;
+        option.textContent = `${client.name} (${client.code})`;
+        select.appendChild(option);
+    });
+}
+
+// Update statistics
+function updateStats() {
+    const today = new Date().toISOString().slice(0, 10);
+    const todayClients = clients.filter(c => c.registrationTime.slice(0, 10) === today);
+    const totalPhotos = clients.reduce((sum, c) => sum + (c.photosCount || 0), 0);
+
+    document.getElementById('totalClients').textContent = clients.length;
+    document.getElementById('todayClients').textContent = todayClients.length;
+    document.getElementById('photosUploaded').textContent = totalPhotos;
+    document.getElementById('activeFolders').textContent = clients.filter(c => c.status === 'Active').length;
+
+    updateClientsList();
+}
+
+function updateClientsList() {
+    const list = document.getElementById('clientsList');
+
+    if (clients.length === 0) {
+        list.innerHTML = '<div class="client-card">No clients registered yet.</div>';
+        return;
+    }
+
+    const recentClients = clients.slice(-5).reverse();
+    const html = recentClients.map(client => `
+        <div class="client-card">
+            <div style="display: flex; justify-content: space-between; align-items: start; gap: 20px;">
+                <div style="flex: 1;">
+                    <h3 style="color: #333; margin-bottom: 10px;">${client.name}</h3>
+                    <p><strong>Code:</strong> ${client.code}</p>
+                    <p><strong>Phone:</strong> ${client.phone}</p>
+                    <p><strong>Instructor:</strong> ${client.instructor}</p>
+                    <p><strong>Dive Type:</strong> ${client.diveType}</p>
+                    <p><strong>Photos:</strong> ${client.photosCount || 0} uploaded</p>
+                    <p><strong>Registered:</strong> ${new Date(client.registrationTime).toLocaleString()}</p>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <a href="${client.driveUrl}" target="_blank" class="btn btn-primary">📁 Open Drive</a>
+                    <button onclick="generateClientQR('${client.id}')" class="btn">🔳 QR Code</button>
+                    <button onclick="sendClientWhatsApp('${client.id}')" class="btn btn-success">📱 WhatsApp</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    list.innerHTML = html;
+}
+
+// Utility functions
+function printQR() {
+    if (!selectedClient) return;
+
+    const qrCanvas = document.getElementById('qrcode').querySelector('canvas');
+    const printWindow = window.open('', '', 'width=600,height=700');
+    printWindow.document.write(`
+        <html>
+            <head><title>Diving Club QR Code</title></head>
+            <body style="text-align: center; font-family: Arial; padding: 20px;">
+                <h1>🏊‍♂️ Diving Club Photos</h1>
+                <h2>${selectedClient.name}</h2>
+                <p><strong>Code:</strong> ${selectedClient.code}</p>
+                <p><strong>Instructor:</strong> ${selectedClient.instructor}</p>
+                <div style="margin: 30px 0;">
+                    <img src="${qrCanvas.toDataURL()}" style="max-width: 300px;">
+                </div>
+                <h3>Scan to access your diving photos!</h3>
+                <p style="margin-top: 30px; font-size: 0.9em; color: #666;">
+                    ${selectedClient.driveUrl}
+                </p>
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+}
+
+function downloadQR() {
+    if (!selectedClient) return;
+
+    const qrCanvas = document.getElementById('qrcode').querySelector('canvas');
+    const link = document.createElement('a');
+    link.download = `${selectedClient.code}_QR_Code.png`;
+    link.href = qrCanvas.toDataURL();
+    link.click();
+}
+
+function sendWhatsApp() {
+    if (!selectedClient) return;
+
+    const message = `🏊‍♂️ Hi ${selectedClient.name}!\n\nYour diving photos are ready! 📸\n\n📱 Scan the QR code or visit:\n${selectedClient.driveUrl}\n\n🤿 Instructor: ${selectedClient.instructor}\n🌊 Dive: ${selectedClient.diveType}\n\nThanks for diving with us!`;
+    const whatsappUrl = `https://wa.me/${selectedClient.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
+
+    window.open(whatsappUrl, '_blank');
+}
+
+function openSheet() {
+    window.open(GOOGLE_SHEET_URL, '_blank');
+}
+
+function refreshData() {
+    showMessage('🔄 Refreshing local data...');
+    setTimeout(() => {
+        updateStats();
+        updateAllSelects();
+        showMessage('✅ Local data refreshed!');
+    }, 1000);
+}
+
+function exportData() {
+    const csvContent = "data:text/csv;charset=utf-8," +
+        "Name,Phone,Instructor,Code,Drive URL,Photos,Registration Date\n" +
+        clients.map(c =>
+            `"${c.name}","${c.phone}","${c.instructor}","${c.code}","${c.driveUrl}","${c.photosCount || 0}","${new Date(c.registrationTime).toLocaleDateString()}"`
+        ).join('\n');
+
+    const link = document.createElement('a');
+    link.setAttribute('href', encodeURI(csvContent));
+    link.setAttribute('download', `diving_club_report_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.click();
+}
+
+// Tab switching
+function switchTab(tabName) {
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+
+    document.getElementById(tabName).classList.add('active');
+    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+    if (tabName === 'manage') {
+        updateStats();
+    } else if (tabName === 'qr') {
+        updateQRClientSelect();
+    }
+}
+
+// Generate QR for specific client
+function generateClientQR(clientId) {
+    const client = clients.find(c => c.id == clientId);
+    if (!client) return;
+
+    selectedClient = client;
+
+    // Switch to QR tab
+    switchTab('qr');
+
+    // Generate QR code
+    const qrGrid = document.getElementById('qrGrid');
+    qrGrid.innerHTML = `
+        <div class="client-card" style="grid-column: 1 / -1;">
+            <h3>QR Code for ${client.name}</h3>
+            <div style="text-align: center; margin: 20px 0;">
+                <canvas id="clientQRCanvas"></canvas>
+            </div>
+            <p><strong>Code:</strong> ${client.code}</p>
+            <p><strong>Drive URL:</strong> <a href="${client.driveUrl}" target="_blank">${client.driveUrl}</a></p>
+            <div class="action-buttons">
+                <button onclick="printClientQR('${client.id}')" class="btn">🖨️ Print</button>
+                <button onclick="downloadClientQR('${client.id}')" class="btn btn-primary">📥 Download</button>
+                <button onclick="sendClientWhatsApp('${client.id}')" class="btn btn-success">📱 WhatsApp</button>
+            </div>
+        </div>
+    `;
+
+    // Generate QR code
+    QRCode.toCanvas(document.getElementById('clientQRCanvas'), client.driveUrl, {
+        width: 280,
+        height: 280,
+        margin: 3
+    });
+}
+
+function sendClientWhatsApp(clientId) {
+    const client = clients.find(c => c.id == clientId);
+    if (!client) return;
+
+    const message = `🏊‍♂️ Hi ${client.name}!\n\nYour diving photos are ready! 📸\n\n📱 Scan the QR code or visit:\n${client.driveUrl}\n\n🤿 Instructor: ${client.instructor}\n🌊 Dive: ${client.diveType}\n\nThanks for diving with us!`;
+    const whatsappUrl = `https://wa.me/${client.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
+
+    window.open(whatsappUrl, '_blank');
+}
+
+// Generate QR for selected client from dropdown
+function generateQRForClient() {
+    const select = document.getElementById('qrClientSelect');
+    const clientId = select.value;
+
+    if (!clientId) {
+        showMessage('⚠️ Please select a client first', 'warning');
+        return;
+    }
+
+    generateClientQR(clientId);
+}
+
+// Placeholder functions for buttons that aren't implemented yet
+function printAllQRs() {
+    showMessage('🔄 Print All QRs feature coming soon!', 'warning');
+}
+
+function downloadAllQRs() {
+    showMessage('🔄 Download All QRs feature coming soon!', 'warning');
+}
+
+function printClientQR(clientId) {
+    const client = clients.find(c => c.id == clientId);
+    if (!client) return;
+
+    const qrCanvas = document.getElementById('clientQRCanvas');
+    const printWindow = window.open('', '', 'width=600,height=700');
+    printWindow.document.write(`
+        <html>
+            <head><title>Diving Club QR Code - ${client.name}</title></head>
+            <body style="text-align: center; font-family: Arial; padding: 20px;">
+                <h1>🏊‍♂️ Diving Club Photos</h1>
+                <h2>${client.name}</h2>
+                <p><strong>Code:</strong> ${client.code}</p>
+                <p><strong>Instructor:</strong> ${client.instructor}</p>
+                <div style="margin: 30px 0;">
+                    <img src="${qrCanvas.toDataURL()}" style="max-width: 300px;">
+                </div>
+                <h3>Scan to access your diving photos!</h3>
+                <p style="margin-top: 30px; font-size: 0.9em; color: #666;">
+                    ${client.driveUrl}
+                </p>
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+}
+
+function downloadClientQR(clientId) {
+    const client = clients.find(c => c.id == clientId);
+    if (!client) return;
+
+    const qrCanvas = document.getElementById('clientQRCanvas');
+    const link = document.createElement('a');
+    link.download = `${client.code}_QR_Code.png`;
+    link.href = qrCanvas.toDataURL();
+    link.click();
+}
+
+// Initialize everything when page loads
+document.addEventListener('DOMContentLoaded', function () {
+    updateAllSelects();
+    updateStats();
+    updateConnectionStatus(false);
+
+    // Test Google Script connection
+    setTimeout(() => {
+        testGoogleScript();
+    }, 1000);
+
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function () {
+            switchTab(this.getAttribute('data-tab'));
+        });
+    });
+
+    // Client form
+    document.getElementById('clientForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById('clientName').value;
+        const phone = document.getElementById('clientPhone').value;
+        const instructor = document.getElementById('instructorName').value;
+        const diveType = document.getElementById('diveType').value;
+
+        registerClient(name, phone, instructor, diveType);
+
+        // Reset form
+        this.reset();
+    });
+
+    // Client selection for upload
+    document.getElementById('clientSelect').addEventListener('change', function () {
+        const clientId = this.value;
+        const client = clients.find(c => c.id == clientId);
+
+        if (client) {
+            selectedClient = client;
+            document.getElementById('selectedClientName').textContent = client.name;
+            document.getElementById('uploadZone').classList.remove('hidden');
+        } else {
+            document.getElementById('uploadZone').classList.add('hidden');
+        }
+    });
+
+    // File upload
+    const uploadZone = document.getElementById('uploadZone');
+    const fileInput = document.getElementById('fileInput');
+
+    if (uploadZone && fileInput) {
+        uploadZone.addEventListener('click', () => fileInput.click());
+
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+    }
+});
+</script>
 </body>
+
 </html>

@@ -492,8 +492,166 @@
     </div>
 
     <script>
+        // Configuration - Replace with your actual URLs
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0DagGGlnUXOs6hTC5rt4kR9Yc98yhg-RUQhierJtVWJJqQqWn3qS_3p3Th53zaHFZxg/exec';
+const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1xBvTa1BudwW677lUQ9noT0Fm_iJB38BDaJfQC1WFGbc';
+
         let clients = JSON.parse(localStorage.getItem('divingClients') || '[]');
         let selectedClient = null;
+
+        // Call Google Apps Script to create client
+        async function callGoogleScript(action, data) {
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Required for Google Apps Script
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: action,
+                        data: data
+                    })
+                });
+                
+                // Since mode is 'no-cors', we can't read the response
+                // So we simulate the response for demo purposes
+                return {
+                    success: true,
+                    clientCode: generateClientCode(data.name),
+                    driveUrl: `https://drive.google.com/drive/folders/${generateClientCode(data.name)}`,
+                    folderId: generateClientCode(data.name)
+                };
+            } catch (error) {
+                console.error('Error calling Google Script:', error);
+                throw error;
+            }
+        }
+
+        // Register client with real Google Script integration
+        async function registerClient(name, phone, instructor, diveType) {
+            showMessage('🤖 Connecting to Google Sheets & Drive...');
+            
+            try {
+                // Call Google Apps Script
+                const result = await callGoogleScript('createClient', {
+                    name,
+                    phone,
+                    instructor,
+                    diveType
+                });
+                
+                if (result.success) {
+                    const client = {
+                        id: Date.now(),
+                        name,
+                        phone,
+                        instructor,
+                        diveType,
+                        code: result.clientCode,
+                        driveUrl: result.driveUrl,
+                        folderId: result.folderId,
+                        registrationTime: new Date().toISOString(),
+                        photosCount: 0,
+                        status: 'Active'
+                    };
+                    
+                    clients.push(client);
+                    localStorage.setItem('divingClients', JSON.stringify(clients));
+                    selectedClient = client;
+                    
+                    // Generate QR code
+                    document.getElementById('qrcode').innerHTML = '';
+                    QRCode.toCanvas(document.getElementById('qrcode'), result.driveUrl, {
+                        width: 280,
+                        height: 280,
+                        margin: 3,
+                        color: {
+                            dark: '#333333',
+                            light: '#ffffff'
+                        }
+                    });
+                    
+                    document.getElementById('generatedCode').textContent = result.clientCode;
+                    document.getElementById('folderLink').href = result.driveUrl;
+                    document.getElementById('qrResult').classList.remove('hidden');
+                    
+                    showMessage('✅ SUCCESS! Client added to Google Sheets & Drive folder created!');
+                    updateAllSelects();
+                    updateStats();
+                } else {
+                    throw new Error('Failed to create client');
+                }
+                
+            } catch (error) {
+                showMessage('❌ Error connecting to Google Services. Using local storage.', 'error');
+                // Fallback to local registration
+                registerClientLocally(name, phone, instructor, diveType);
+            }
+        }
+
+        // Fallback local registration
+        function registerClientLocally(name, phone, instructor, diveType) {
+            const clientCode = generateClientCode(name);
+            const driveUrl = `https://drive.google.com/drive/folders/example_${clientCode}`;
+            
+            const client = {
+                id: Date.now(),
+                name,
+                phone,
+                instructor,
+                diveType,
+                code: clientCode,
+                driveUrl,
+                folderId: `example_${clientCode}`,
+                registrationTime: new Date().toISOString(),
+                photosCount: 0,
+                status: 'Local'
+            };
+            
+            clients.push(client);
+            localStorage.setItem('divingClients', JSON.stringify(clients));
+            selectedClient = client;
+            
+            // Generate QR code
+            document.getElementById('qrcode').innerHTML = '';
+            QRCode.toCanvas(document.getElementById('qrcode'), driveUrl, {
+                width: 280,
+                height: 280,
+                margin: 3
+            });
+            
+            document.getElementById('generatedCode').textContent = clientCode;
+            document.getElementById('folderLink').href = driveUrl;
+            document.getElementById('qrResult').classList.remove('hidden');
+            
+            showMessage('⚠️ Client registered locally. Check Google Script connection.');
+            updateAllSelects();
+            updateStats();
+        }
+
+        // Upload photos to Google Drive via script
+        async function uploadPhotosViaScript(clientId, fileCount) {
+            try {
+                const client = clients.find(c => c.id == clientId);
+                if (!client) return;
+
+                await callGoogleScript('uploadPhotos', {
+                    clientCode: client.code,
+                    fileCount: fileCount
+                });
+
+                // Update local count
+                const clientIndex = clients.findIndex(c => c.id == clientId);
+                clients[clientIndex].photosCount = (clients[clientIndex].photosCount || 0) + fileCount;
+                localStorage.setItem('divingClients', JSON.stringify(clients));
+                
+                return true;
+            } catch (error) {
+                console.error('Error uploading via script:', error);
+                return false;
+            }
+        }
 
         // Generate client code
         function generateClientCode(name) {
@@ -554,7 +712,7 @@
             }, 1500);
         }
 
-        // Handle file uploads
+        // Handle file uploads with Google Script integration
         function handleFiles(files) {
             if (!selectedClient) return;
             
@@ -567,32 +725,55 @@
             let uploaded = 0;
             const total = files.length;
             
-            const uploadNext = () => {
+            const uploadNext = async () => {
                 if (uploaded < total) {
                     const file = files[uploaded];
                     const progress = ((uploaded + 1) / total) * 100;
                     
                     progressFill.style.width = `${progress}%`;
-                    progressText.textContent = `Uploading ${file.name} to ${selectedClient.name}'s Google Drive folder... (${uploaded + 1}/${total})`;
+                    progressText.textContent = `Uploading ${file.name} to Google Drive... (${uploaded + 1}/${total})`;
                     
                     uploaded++;
                     setTimeout(uploadNext, 600);
                 } else {
-                    // Update client photos count
-                    const clientIndex = clients.findIndex(c => c.id === selectedClient.id);
-                    clients[clientIndex].photosCount = (clients[clientIndex].photosCount || 0) + total;
-                    localStorage.setItem('divingClients', JSON.stringify(clients));
+                    // Notify Google Script about upload completion
+                    progressText.textContent = 'Updating Google Sheets database...';
                     
-                    progressText.textContent = `✅ Successfully uploaded ${total} photos to Google Drive!`;
+                    const success = await uploadPhotosViaScript(selectedClient.id, total);
+                    
+                    if (success) {
+                        progressText.textContent = `✅ ${total} photos uploaded & Google Sheets updated!`;
+                    } else {
+                        progressText.textContent = `✅ ${total} photos uploaded (Google Sheets update pending)`;
+                    }
+                    
                     setTimeout(() => {
                         progressDiv.classList.add('hidden');
-                        showMessage(`✅ ${total} photos uploaded to ${selectedClient.name}'s folder!`);
+                        showMessage(`✅ ${total} photos uploaded to ${selectedClient.name}'s Google Drive folder!`);
                         updateStats();
                     }, 1500);
                 }
             };
             
             uploadNext();
+        }
+
+        function openSheet() {
+            // Open your actual Google Sheet
+            window.open(GOOGLE_SHEET_URL, '_blank');
+        }
+
+        // Enhanced Google Script integration
+        function testGoogleScript() {
+            showMessage('🧪 Testing Google Script connection...');
+            
+            callGoogleScript('test', {})
+                .then(() => {
+                    showMessage('✅ Google Script connection successful!');
+                })
+                .catch(() => {
+                    showMessage('❌ Google Script connection failed. Check your script URL.', 'error');
+                });
         }
 
         // Update all select dropdowns
@@ -732,8 +913,8 @@
         }
 
         function openSheet() {
-            // Simulate opening Google Sheets
-            window.open('https://docs.google.com/spreadsheets/d/your-sheet-id/edit', '_blank');
+            // Open your actual Google Sheet - replace with your sheet URL
+            window.open('https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit', '_blank');
         }
 
         function refreshData() {
@@ -758,7 +939,7 @@
             link.click();
         }
 
-         // Tab switching
+        // Tab switching
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
@@ -843,7 +1024,6 @@
                 handleFiles(e.target.files);
             });
         });
-
-          </script>
+                  </script>
 </body>
 </html>

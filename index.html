@@ -542,7 +542,7 @@
 
     <script>
         // Configuration
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby7v4eabJpOkpQ5NDBChoatnFkv_Ktnr44LnT3BxhXwT87syI6K-VNVQYZBxPk84lQAYQ/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx6y1Rveo-3Rh3c7oIMSlfDkYWkYuaKO-4yWzLscW8UR__YVjbPxqIbdCAf8QAckphlBg/exec';
 const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1xBvTa1BudwW677lUQ9noT0Fm_iJB38BDaJfQC1WFGbc';
         const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdVvRJwKYFo2E9RyOdNpyN9A9w4_Fw-Z3uGZQHqWvXyWtxY5A/viewform';
 
@@ -599,35 +599,53 @@ const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1xBvTa1BudwW677
             });
         }
 
-        // Enhanced register client function (bypassing CORS)
-        async function registerClient(name, phone, instructor, diveType) {
-            showMessage('🚀 Registering client...');
-            
-            // Always register locally first
-            const clientCode = generateClientCode(name);
-            const driveUrl = `https://drive.google.com/drive/folders/YOUR_FOLDER_ID_${clientCode}`;
-            
+        // Replace your registerClient function with this:
+async function registerClient(name, phone, instructor, diveType) {
+    try {
+        showMessage('🤖 Creating client in Google Sheets & Drive...');
+        
+        // Call Google Apps Script directly
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'createClient',
+                data: {
+                    name: name,
+                    phone: phone,
+                    instructor: instructor,
+                    diveType: diveType
+                }
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
             const client = {
                 id: Date.now(),
                 name,
                 phone,
                 instructor,
                 diveType,
-                code: clientCode,
-                driveUrl,
-                folderId: `folder_${clientCode}`,
+                code: result.clientCode,
+                driveUrl: result.driveUrl,
+                folderId: result.folderId,
                 registrationTime: new Date().toISOString(),
                 photosCount: 0,
                 status: 'Active'
             };
             
+            // Store locally as backup
             clients.push(client);
             localStorage.setItem('divingClients', JSON.stringify(clients));
             selectedClient = client;
             
             // Generate QR code
             document.getElementById('qrcode').innerHTML = '';
-            QRCode.toCanvas(document.getElementById('qrcode'), driveUrl, {
+            QRCode.toCanvas(document.getElementById('qrcode'), result.driveUrl, {
                 width: 280,
                 height: 280,
                 margin: 3,
@@ -637,24 +655,68 @@ const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1xBvTa1BudwW677
                 }
             });
             
-            document.getElementById('generatedCode').textContent = clientCode;
-            document.getElementById('folderLink').href = driveUrl;
+            document.getElementById('generatedCode').textContent = result.clientCode;
+            document.getElementById('folderLink').href = result.driveUrl;
             document.getElementById('qrResult').classList.remove('hidden');
             
-            // Try to submit to Google Form (optional)
-            try {
-                await submitToGoogleForm(name, phone, instructor, diveType);
-                showMessage('✅ Client registered locally and submitted to Google Form!');
-                updateConnectionStatus(true);
-            } catch (error) {
-                showMessage('✅ Client registered locally! (Google Form submission failed)');
-                updateConnectionStatus(false);
-            }
-            
+            showMessage('✅ SUCCESS! Client added to Google Sheets & Drive folder created!');
+            updateConnectionStatus(true);
             updateAllSelects();
             updateStats();
+            
+        } else {
+            throw new Error(result.error || 'Failed to create client');
         }
+        
+    } catch (error) {
+        console.error('Registration error:', error);
+        showMessage('❌ Error: ' + error.message, 'error');
+        updateConnectionStatus(false);
+        
+        // Fallback to local registration
+        registerClientLocally(name, phone, instructor, diveType);
+    }
+}
 
+// Add this fallback function
+function registerClientLocally(name, phone, instructor, diveType) {
+    const clientCode = generateClientCode(name);
+    const driveUrl = `https://drive.google.com/drive/folders/example_${clientCode}`;
+    
+    const client = {
+        id: Date.now(),
+        name,
+        phone,
+        instructor,
+        diveType,
+        code: clientCode,
+        driveUrl,
+        folderId: `example_${clientCode}`,
+        registrationTime: new Date().toISOString(),
+        photosCount: 0,
+        status: 'Local'
+    };
+    
+    clients.push(client);
+    localStorage.setItem('divingClients', JSON.stringify(clients));
+    selectedClient = client;
+    
+    // Generate QR code
+    document.getElementById('qrcode').innerHTML = '';
+    QRCode.toCanvas(document.getElementById('qrcode'), driveUrl, {
+        width: 280,
+        height: 280,
+        margin: 3
+    });
+    
+    document.getElementById('generatedCode').textContent = clientCode;
+    document.getElementById('folderLink').href = driveUrl;
+    document.getElementById('qrResult').classList.remove('hidden');
+    
+    showMessage('⚠️ Client registered locally. Google connection failed.');
+    updateAllSelects();
+    updateStats();
+}
         // Generate client code
         function generateClientCode(name) {
             const today = new Date();

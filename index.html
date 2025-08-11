@@ -1,40 +1,4 @@
-// Handle client selection for upload
-            document.getElementById('clientSelect').addEventListener('change', function() {
-                if (this.value) {
-                    document.getElementById('uploadSection').classList.remove('hidden');
-                } else {
-                    document.getElementById('uploadSection').classList.add('hidden');
-                }
-            });
-
-            // File upload handling
-            const uploadArea = document.querySelector('.upload-area');
-            const fileInput = document.getElementById('fileInput');
-
-            if (uploadArea && fileInput) {
-                // Drag and drop
-                uploadArea.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    uploadArea.classList.add('dragover');
-                });
-
-                uploadArea.addEventListener('dragleave', () => {
-                    uploadArea.classList.remove('dragover');
-                });
-
-                uploadArea.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    uploadArea.classList.remove('dragover');
-                    handleFiles(e.dataTransfer.files);
-                });
-
-                fileInput.addEventListener('change', (e) => {
-                    handleFiles(e.target.files);
-                });
-
-                // Upload button
-                document.getElementById('uploadBtn').addEventListener('click', uploadFiles);
-            }<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">

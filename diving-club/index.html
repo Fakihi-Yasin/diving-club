@@ -1,0 +1,853 @@
+// Handle client selection for upload
+            document.getElementById('clientSelect').addEventListener('change', function() {
+                if (this.value) {
+                    document.getElementById('uploadSection').classList.remove('hidden');
+                } else {
+                    document.getElementById('uploadSection').classList.add('hidden');
+                }
+            });
+
+            // File upload handling
+            const uploadArea = document.querySelector('.upload-area');
+            const fileInput = document.getElementById('fileInput');
+
+            if (uploadArea && fileInput) {
+                // Drag and drop
+                uploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.add('dragover');
+                });
+
+                uploadArea.addEventListener('dragleave', () => {
+                    uploadArea.classList.remove('dragover');
+                });
+
+                uploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.remove('dragover');
+                    handleFiles(e.dataTransfer.files);
+                });
+
+                fileInput.addEventListener('change', (e) => {
+                    handleFiles(e.target.files);
+                });
+
+                // Upload button
+                document.getElementById('uploadBtn').addEventListener('click', uploadFiles);
+            }<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diving Club Media System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        // Wait for QRCode library to load
+        function waitForQRCode(callback) {
+            if (typeof QRCode !== 'undefined') {
+                callback();
+            } else {
+                setTimeout(() => waitForQRCode(callback), 100);
+            }
+        }
+        
+        // Fallback QR generation using Google Charts API
+        function generateQRFallback(text) {
+            const size = 200;
+            const url = `https://chart.googleapis.com/chart?chs=${size}x${size}&cht=qr&chl=${encodeURIComponent(text)}`;
+            return `<img src="${url}" alt="QR Code" style="width: ${size}px; height: ${size}px;">`;
+        }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #333;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .tab {
+            padding: 15px 20px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .qr-display {
+            text-align: center;
+            margin-top: 30px;
+            padding: 30px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            border: 2px dashed #ddd;
+        }
+        
+        .client-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .config-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .status-box {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+        
+        .status-connected {
+            background: #e8f5e8;
+            border-color: #34a853;
+            color: #155724;
+        }
+        
+        .status-disconnected {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏊‍♂️ Diving Club Media System</h1>
+            <p>Simple QR code system for photos and videos</p>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="setup">Setup</button>
+            <button class="tab" data-tab="register">Register Client</button>
+            <button class="tab" data-tab="upload">Upload Photos</button>
+            <button class="tab" data-tab="manage">Manage Clients</button>
+        </div>
+        
+        <!-- Setup Tab -->
+        <div id="setup" class="tab-content active">
+            <h2>Configuration</h2>
+            
+            <div class="config-section">
+                <h3>Google Drive Setup</h3>
+                <div class="form-group">
+                    <label for="apiKey">Google Drive API Key</label>
+                    <input type="password" id="apiKey" placeholder="Enter your API Key">
+                </div>
+                
+                <div class="form-group">
+                    <label for="clientId">OAuth Client ID</label>
+                    <input type="text" id="clientId" placeholder="Enter your Client ID">
+                </div>
+                
+                <button id="saveConfigBtn" class="btn">Save Configuration</button>
+            </div>
+            
+            <div id="connectionStatus" class="status-box status-disconnected">
+                📡 Google Drive: Not Connected
+            </div>
+            
+            <button id="connectBtn" class="btn">Connect to Google Drive</button>
+            
+            <div class="config-section">
+                <h3>Setup Steps</h3>
+                <ol style="padding-left: 20px; line-height: 1.8;">
+                    <li>Go to console.cloud.google.com</li>
+                    <li>Create project and enable Google Drive API</li>
+                    <li>Create API Key and OAuth Client ID</li>
+                    <li>Enter credentials above and save</li>
+                    <li>Click "Connect to Google Drive"</li>
+                </ol>
+            </div>
+        </div>
+        
+        <!-- Register Client Tab -->
+        <div id="register" class="tab-content">
+            <h2>Register New Client</h2>
+            
+            <div id="driveStatusRegister" class="status-box status-disconnected">
+                ⚠️ Connect to Google Drive first in Setup tab
+            </div>
+            
+            <form id="clientForm">
+                <div class="form-group">
+                    <label for="clientName">Client Name *</label>
+                    <input type="text" id="clientName" required placeholder="e.g., Ahmed Hassan">
+                </div>
+                
+                <div class="form-group">
+                    <label for="clientPhone">Phone Number *</label>
+                    <input type="tel" id="clientPhone" required placeholder="e.g., +1234567890">
+                </div>
+                
+                <div class="form-group">
+                    <label for="instructorName">Assigned Instructor *</label>
+                    <select id="instructorName" required>
+                        <option value="">Select Instructor</option>
+                        <option value="Omar">Omar - Instructor 1</option>
+                        <option value="Sara">Sara - Instructor 2</option>
+                        <option value="Mohamed">Mohamed - Instructor 3</option>
+                        <option value="Layla">Layla - Instructor 4</option>
+                        <option value="Hassan">Hassan - Instructor 5</option>
+                        <option value="Fatima">Fatima - Instructor 6</option>
+                        <option value="Ahmed">Ahmed - Instructor 7</option>
+                        <option value="Nour">Nour - Instructor 8</option>
+                        <option value="Khalil">Khalil - Instructor 9</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn">Generate QR Code</button>
+            </form>
+            
+            <div id="qrResult" class="qr-display hidden">
+                <h3>✅ Client QR Code Generated!</h3>
+                <div id="qrcode"></div>
+                <p><strong>Client Code:</strong> <span id="generatedCode"></span></p>
+                <p><strong>Download Link:</strong> <span id="downloadLink"></span></p>
+                <button id="printBtn" class="btn" style="margin-top: 15px;">Print QR Code</button>
+            </div>
+        </div>
+        
+        <!-- Upload Photos Tab -->
+        <div id="upload" class="tab-content">
+            <h2>Upload Photos & Videos</h2>
+            
+            <div class="form-group">
+                <label for="clientSelect">Select Client:</label>
+                <select id="clientSelect">
+                    <option value="">Choose a client...</option>
+                </select>
+            </div>
+            
+            <div id="uploadSection" class="hidden">
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                    <h3>📸 Drop files here or click to browse</h3>
+                    <p>Supported: JPG, PNG, MP4, MOV</p>
+                    <input type="file" id="fileInput" multiple accept="image/*,video/*" class="hidden">
+                </div>
+                
+                <div id="fileList"></div>
+                <button id="uploadBtn" class="btn hidden" style="margin-top: 20px;">Upload Files</button>
+                <div id="uploadProgress" class="hidden" style="margin-top: 15px;">
+                    <div style="background: #e0e0e0; border-radius: 10px; overflow: hidden;">
+                        <div id="progressBar" style="background: #4caf50; height: 20px; width: 0%; transition: width 0.3s;"></div>
+                    </div>
+                    <p id="progressText">Preparing upload...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Manage Clients Tab -->
+        <div id="manage" class="tab-content">
+            <h2>Today's Clients</h2>
+            <div id="clientsList"></div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables - simple approach
+        let config = {};
+        let clients = [];
+        let isConnected = false;
+        let selectedFiles = [];
+
+        // Google Drive API functions (Updated to use new Google Identity Services)
+        async function initializeGoogleAPI() {
+            if (!config.apiKey || !config.clientId) {
+                throw new Error('API credentials not configured');
+            }
+
+            // Load Google API client
+            await new Promise((resolve) => {
+                gapi.load('client', resolve);
+            });
+
+            // Initialize API client with API key only
+            await gapi.client.init({
+                apiKey: config.apiKey,
+                discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
+            });
+
+            // Use new Google Identity Services for OAuth
+            return new Promise((resolve, reject) => {
+                const tokenClient = google.accounts.oauth2.initTokenClient({
+                    client_id: config.clientId,
+                    scope: 'https://www.googleapis.com/auth/drive.file',
+                    callback: (response) => {
+                        if (response.error) {
+                            reject(new Error(response.error));
+                            return;
+                        }
+                        
+                        // Set the access token for API calls
+                        gapi.client.setToken({
+                            access_token: response.access_token
+                        });
+                        
+                        resolve(true);
+                    }
+                });
+                
+                // Request access token
+                tokenClient.requestAccessToken();
+            });
+        }
+
+        async function createDriveFolder(folderName) {
+            const metadata = {
+                name: folderName,
+                mimeType: 'application/vnd.google-apps.folder'
+            };
+
+            const response = await gapi.client.drive.files.create({
+                resource: metadata
+            });
+
+            const folderId = response.result.id;
+
+            // Make folder public
+            await gapi.client.drive.permissions.create({
+                fileId: folderId,
+                resource: {
+                    role: 'reader',
+                    type: 'anyone'
+                }
+            });
+
+            return folderId;
+        }
+
+        async function uploadFileToDrive(file, folderId) {
+            const metadata = {
+                name: file.name,
+                parents: [folderId]
+            };
+
+            const form = new FormData();
+            form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
+            form.append('file', file);
+
+            const token = gapi.client.getToken();
+            if (!token || !token.access_token) {
+                throw new Error('No access token available');
+            }
+
+            const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token.access_token}`
+                },
+                body: form
+            });
+
+            return response.json();
+        }
+
+        // Load saved data
+        function loadData() {
+            const savedConfig = localStorage.getItem('divingConfig');
+            const savedClients = localStorage.getItem('divingClients');
+            
+            if (savedConfig) {
+                config = JSON.parse(savedConfig);
+                document.getElementById('apiKey').value = config.apiKey || '';
+                document.getElementById('clientId').value = config.clientId || '';
+            }
+            
+            if (savedClients) {
+                clients = JSON.parse(savedClients);
+            }
+        }
+
+        // Save configuration
+        function saveConfig() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const clientId = document.getElementById('clientId').value.trim();
+            
+            if (!apiKey || !clientId) {
+                alert('Please enter both API Key and Client ID');
+                return;
+            }
+            
+            config = { apiKey, clientId };
+            localStorage.setItem('divingConfig', JSON.stringify(config));
+            
+            showMessage('✅ Configuration saved! Now click "Connect to Google Drive"');
+        }
+
+        // Generate client code
+        function generateClientCode(name) {
+            const today = new Date();
+            const dateStr = today.toISOString().slice(0, 10).replace(/-/g, '');
+            const initials = name.split(' ').map(word => word[0].toUpperCase()).join('').slice(0, 3);
+            const sequence = String(clients.length + 1).padStart(3, '0');
+            return `${initials}-${dateStr}-${sequence}`;
+        }
+
+        // Register client (with real Google Drive integration)
+        async function registerClient(name, phone, instructor) {
+            const clientCode = generateClientCode(name);
+            
+            try {
+                let folderId, downloadUrl;
+                
+                if (isConnected) {
+                    // Create real Google Drive folder
+                    showMessage('📁 Creating Google Drive folder...');
+                    folderId = await createDriveFolder(clientCode);
+                    downloadUrl = `https://drive.google.com/drive/folders/${folderId}`;
+                    showMessage('✅ Google Drive folder created!');
+                } else {
+                    // Test mode
+                    downloadUrl = `https://drive.google.com/drive/folders/${clientCode}`;
+                    showMessage('⚠️ Test mode - using mock folder URL');
+                }
+                
+                // Create client object
+                const client = {
+                    id: Date.now(),
+                    name,
+                    phone,
+                    instructor,
+                    code: clientCode,
+                    downloadUrl,
+                    driveFolderId: folderId || null,
+                    registrationTime: new Date().toISOString(),
+                    filesUploaded: false,
+                    fileCount: 0
+                };
+                
+                // Add to clients array
+                clients.push(client);
+                localStorage.setItem('divingClients', JSON.stringify(clients));
+                
+                // Generate QR code
+                waitForQRCode(() => {
+                    try {
+                        document.getElementById('qrcode').innerHTML = '';
+                        QRCode.toCanvas(document.getElementById('qrcode'), downloadUrl, {
+                            width: 200,
+                            height: 200,
+                            margin: 2
+                        });
+                        
+                        document.getElementById('generatedCode').textContent = clientCode;
+                        document.getElementById('downloadLink').textContent = downloadUrl;
+                        document.getElementById('qrResult').classList.remove('hidden');
+                        
+                        showMessage('✅ Client registered successfully! QR code generated');
+                    } catch (error) {
+                        console.error('QR Code generation error:', error);
+                        // Fallback - use Google Charts API
+                        document.getElementById('qrcode').innerHTML = generateQRFallback(downloadUrl);
+                        document.getElementById('generatedCode').textContent = clientCode;
+                        document.getElementById('downloadLink').textContent = downloadUrl;
+                        document.getElementById('qrResult').classList.remove('hidden');
+                        
+                        showMessage('✅ Client registered! (Using fallback QR generator)');
+                    }
+                });
+                
+                updateClientsList();
+                updateClientSelect();
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                showMessage('❌ Failed to register client: ' + error.message, 'error');
+            }
+        }
+
+        // Show temporary message
+        function showMessage(text, type = 'success') {
+            // Remove existing message
+            const existing = document.querySelector('.success-message, .error-message');
+            if (existing) existing.remove();
+            
+            // Add new message
+            const message = document.createElement('div');
+            message.className = type === 'error' ? 'error-message' : 'success-message';
+            message.textContent = text;
+            
+            if (type === 'error') {
+                message.style.background = '#f8d7da';
+                message.style.color = '#721c24';
+                message.style.border = '1px solid #f5c6cb';
+            }
+            
+            document.querySelector('.container').insertBefore(message, document.querySelector('.header').nextSibling);
+            
+            // Remove after 4 seconds
+            setTimeout(() => {
+                if (message.parentNode) message.remove();
+            }, 4000);
+        }
+
+        // Update client select dropdown for upload
+        function updateClientSelect() {
+            const select = document.getElementById('clientSelect');
+            select.innerHTML = '<option value="">Choose a client...</option>';
+            
+            clients.forEach(client => {
+                const option = document.createElement('option');
+                option.value = client.id;
+                option.textContent = `${client.name} (${client.code}) - ${client.instructor}`;
+                select.appendChild(option);
+            });
+        }
+
+        // Handle file selection
+        function handleFiles(files) {
+            selectedFiles = Array.from(files);
+            displaySelectedFiles();
+        }
+
+        function displaySelectedFiles() {
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+            
+            if (selectedFiles.length > 0) {
+                const listHTML = selectedFiles.map((file, index) => `
+                    <div class="client-card">
+                        <strong>${file.name}</strong>
+                        <span style="float: right; color: #666;">
+                            ${(file.size / 1024 / 1024).toFixed(1)} MB
+                        </span>
+                    </div>
+                `).join('');
+                
+                fileList.innerHTML = listHTML;
+                document.getElementById('uploadBtn').classList.remove('hidden');
+            }
+        }
+
+        // Upload files to Google Drive
+        async function uploadFiles() {
+            const clientId = document.getElementById('clientSelect').value;
+            const client = clients.find(c => c.id == clientId);
+            
+            if (!client || !selectedFiles.length) return;
+            
+            if (!isConnected) {
+                alert('Please connect to Google Drive first');
+                return;
+            }
+            
+            if (!client.driveFolderId) {
+                alert('This client was created in test mode. Please register them again after connecting to Google Drive.');
+                return;
+            }
+            
+            const uploadBtn = document.getElementById('uploadBtn');
+            const progressDiv = document.getElementById('uploadProgress');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            
+            uploadBtn.classList.add('hidden');
+            progressDiv.classList.remove('hidden');
+            
+            try {
+                for (let i = 0; i < selectedFiles.length; i++) {
+                    const file = selectedFiles[i];
+                    const progress = ((i + 1) / selectedFiles.length) * 100;
+                    
+                    progressBar.style.width = `${progress}%`;
+                    progressText.textContent = `Uploading ${file.name}... (${i + 1}/${selectedFiles.length})`;
+                    
+                    await uploadFileToDrive(file, client.driveFolderId);
+                }
+                
+                // Update client record
+                const clientIndex = clients.findIndex(c => c.id == clientId);
+                clients[clientIndex].filesUploaded = true;
+                clients[clientIndex].fileCount = selectedFiles.length;
+                localStorage.setItem('divingClients', JSON.stringify(clients));
+                
+                // Reset UI
+                selectedFiles = [];
+                document.getElementById('fileList').innerHTML = '';
+                document.getElementById('clientSelect').value = '';
+                document.getElementById('uploadSection').classList.add('hidden');
+                progressDiv.classList.add('hidden');
+                uploadBtn.classList.remove('hidden');
+                
+                updateClientsList();
+                showMessage(`✅ Successfully uploaded ${selectedFiles.length} files!`);
+                
+            } catch (error) {
+                console.error('Upload error:', error);
+                progressDiv.classList.add('hidden');
+                uploadBtn.classList.remove('hidden');
+                showMessage('❌ Upload failed: ' + error.message, 'error');
+            }
+        }
+
+        // Update connection status
+        function updateConnectionStatus(connected) {
+            isConnected = connected;
+            const statusMain = document.getElementById('connectionStatus');
+            const statusRegister = document.getElementById('driveStatusRegister');
+            
+            if (connected) {
+                statusMain.className = 'status-box status-connected';
+                statusMain.textContent = '✅ Google Drive: Connected';
+                statusRegister.className = 'status-box status-connected';
+                statusRegister.textContent = '✅ Google Drive: Ready to create folders';
+            } else {
+                statusMain.className = 'status-box status-disconnected';
+                statusMain.textContent = '📡 Google Drive: Not Connected';
+                statusRegister.className = 'status-box status-disconnected';
+                statusRegister.textContent = '⚠️ Connect to Google Drive first in Setup tab';
+            }
+        }
+
+        // Update clients list
+        function updateClientsList() {
+            const list = document.getElementById('clientsList');
+            
+            if (clients.length === 0) {
+                list.innerHTML = '<div class="client-card">No clients registered today.</div>';
+                return;
+            }
+            
+            const html = clients.map(client => `
+                <div class="client-card">
+                    <h3>${client.name}</h3>
+                    <p><strong>Code:</strong> ${client.code}</p>
+                    <p><strong>Phone:</strong> ${client.phone}</p>
+                    <p><strong>Instructor:</strong> ${client.instructor}</p>
+                    <p><strong>Files:</strong> ${client.filesUploaded ? `${client.fileCount || 0} uploaded ✅` : 'Pending ⏳'}</p>
+                    <p><strong>Time:</strong> ${new Date(client.registrationTime).toLocaleTimeString()}</p>
+                    ${client.downloadUrl ? `<p><strong>Folder:</strong> <a href="${client.downloadUrl}" target="_blank">Open Drive Folder</a></p>` : ''}
+                </div>
+            `).join('');
+            
+            list.innerHTML = html;
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            if (tabName === 'manage') {
+                updateClientsList();
+            } else if (tabName === 'upload') {
+                updateClientSelect();
+            }
+        }
+
+        // Real Google Drive connection
+        async function connectToDrive() {
+            if (!config.apiKey || !config.clientId) {
+                alert('Please save your configuration first');
+                return;
+            }
+            
+            const btn = document.getElementById('connectBtn');
+            btn.textContent = 'Connecting to Google Drive...';
+            btn.disabled = true;
+            
+            try {
+                const success = await initializeGoogleAPI();
+                if (success) {
+                    updateConnectionStatus(true);
+                    btn.textContent = 'Connected ✅';
+                    showMessage('✅ Successfully connected to Google Drive!');
+                } else {
+                    throw new Error('Authentication failed');
+                }
+            } catch (error) {
+                console.error('Google Drive connection error:', error);
+                updateConnectionStatus(false);
+                btn.textContent = 'Connect to Google Drive';
+                btn.disabled = false;
+                showMessage('❌ Failed to connect to Google Drive: ' + error.message, 'error');
+            }
+        }
+
+        // Print QR code
+        function printQR() {
+            const qrContent = document.getElementById('qrResult');
+            const printWindow = window.open('', '', 'width=400,height=400');
+            printWindow.document.write(`
+                <html>
+                    <head><title>Print QR Code</title></head>
+                    <body style="text-align: center; font-family: Arial; padding: 20px;">
+                        <h2>Diving Club - Client QR Code</h2>
+                        ${qrContent.innerHTML}
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            updateClientsList();
+            
+            // Tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    switchTab(this.getAttribute('data-tab'));
+                });
+            });
+            
+            // Save config button
+            document.getElementById('saveConfigBtn').addEventListener('click', saveConfig);
+            
+            // Connect button
+            document.getElementById('connectBtn').addEventListener('click', connectToDrive);
+            
+            // Client form
+            document.getElementById('clientForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!isConnected) {
+                    alert('Please connect to Google Drive first in the Setup tab');
+                    return;
+                }
+                
+                const name = document.getElementById('clientName').value;
+                const phone = document.getElementById('clientPhone').value;
+                const instructor = document.getElementById('instructorName').value;
+                
+                registerClient(name, phone, instructor);
+                
+                // Reset form
+                this.reset();
+            });
+            
+            // Print button
+            document.getElementById('printBtn').addEventListener('click', printQR);
+        });
+    </script>
+</body>
+</html>

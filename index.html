@@ -555,8 +555,9 @@
         </div>
     </div>
 
-<script>
-    // Configuration - Updated with your new URL
+
+    <script>
+        // Configuration
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVsdgKJFHJvxQBeTXH3uvqgQ8rUzz8LHO7YxDCcor0YWiK4fxpS9df90-q2H2VEwttkg/exec';
 const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1xBvTa1BudwW677lUQ9noT0Fm_iJB38BDaJfQC1WFGbc';
 const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdVvRJwKYFo2E9RyOdNpyN9A9w4_Fw-Z3uGZQHqWvXyWtxY5A/viewform';
@@ -603,7 +604,7 @@ function submitToGoogleScript(data) {
     });
 }
 
-// FIXED - Handle file uploads with modal options
+// Handle file uploads
 function handleFiles(files) {
     if (!selectedClient) {
         showMessage('⚠️ Please select a client first', 'warning');
@@ -683,186 +684,31 @@ function showUploadOptions(fileCount) {
     };
 }
 
-function addUploadZoneClickHandler() {
-    // Wait for DOM to be ready
-    setTimeout(() => {
-        const uploadZone = document.getElementById('uploadZone');
-        const fileInput = document.getElementById('fileInput');
-        
-        if (uploadZone && fileInput) {
-            console.log('Adding click handler to upload zone'); // Debug
-            
-            uploadZone.style.cursor = 'pointer'; // Visual feedback
-            
-            uploadZone.addEventListener('click', function(e) {
-                console.log('Upload zone clicked'); // Debug
-                
-                // Don't trigger if clicking on buttons
-                if (e.target.closest('button') || e.target.closest('a')) {
-                    return;
-                }
-                
-                e.preventDefault();
-                e.stopPropagation();
-                
-                if (selectedClient) {
-                    console.log('Opening file browser'); // Debug
-                    fileInput.click();
-                } else {
-                    showMessage('⚠️ Please select a client first', 'warning');
-                }
-            });
-            
-            // Also add to the camera icon specifically
-            const cameraIcon = uploadZone.querySelector('div[style*="font-size: 3rem"]');
-            if (cameraIcon) {
-                cameraIcon.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (selectedClient && fileInput) {
-                        fileInput.click();
-                    }
-                });
-            }
-        }
-    }, 100);
-}
-
-
-function handleClientSelectionWithUpload() {
-    document.getElementById('clientSelect').addEventListener('change', function () {
-        const clientId = this.value;
-        const client = clients.find(c => c.id == clientId);
-
-        if (client) {
-            selectedClient = client;
-            document.getElementById('selectedClientName').textContent = client.name;
-            document.getElementById('uploadZone').classList.remove('hidden');
-            
-            // Show upload instructions
-            showUploadInstructions();
-            
-            // Add click handler after zone is visible
-            addUploadZoneClickHandler();
-            
-        } else {
-            selectedClient = null;
-            document.getElementById('uploadZone').classList.add('hidden');
-            
-            // Hide instructions
-            const instructionsDiv = document.getElementById('uploadInstructions');
-            if (instructionsDiv) {
-                instructionsDiv.style.display = 'none';
-            }
-        }
-    });
-}
-
-// UPDATED INITIALIZATION
-document.addEventListener('DOMContentLoaded', function () {
-    updateAllSelects();
-    updateStats();
-    updateConnectionStatus(false);
-
-    // Test Google Script connection
-    setTimeout(() => {
-        testGoogleScript();
-    }, 1000);
-
-    // Tab switching
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', function () {
-            switchTab(this.getAttribute('data-tab'));
-        });
-    });
-
-    // Client form
-    document.getElementById('clientForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        const name = document.getElementById('clientName').value;
-        const phone = document.getElementById('clientPhone').value;
-        const instructor = document.getElementById('instructorName').value;
-        const diveType = document.getElementById('diveType').value;
-
-        registerClient(name, phone, instructor, diveType);
-        this.reset();
-    });
-
-    // Use enhanced client selection handler
-    handleClientSelectionWithUpload();
-
-    // Setup file upload functionality
-    setupFileUpload();
-    
-    // Force add click handler after everything loads
-    setTimeout(() => {
-        addUploadZoneClickHandler();
-    }, 500);
-});
-
-// Test if file input exists and works
-function testFileInput() {
-    const fileInput = document.getElementById('fileInput');
-    const uploadZone = document.getElementById('uploadZone');
-    
-    console.log('File input found:', !!fileInput);
-    console.log('Upload zone found:', !!uploadZone);
-    console.log('Selected client:', selectedClient);
-    
-    if (fileInput) {
-        fileInput.click(); // This should open file browser
-    }
-}
-
-// Add a test button temporarily
-function addTestButton() {
-    const testBtn = document.createElement('button');
-    testBtn.textContent = '🧪 Test File Input';
-    testBtn.style.position = 'fixed';
-    testBtn.style.top = '10px';
-    testBtn.style.right = '10px';
-    testBtn.style.zIndex = '9999';
-    testBtn.style.padding = '10px';
-    testBtn.onclick = testFileInput;
-    document.body.appendChild(testBtn);
-}
-
-// Force click handler on upload zone
-function forceUploadZoneClick() {
-    const uploadZone = document.getElementById('uploadZone');
-    const fileInput = document.getElementById('fileInput');
-    
-    if (uploadZone) {
-        // Remove all existing listeners
-        const newUploadZone = uploadZone.cloneNode(true);
-        uploadZone.parentNode.replaceChild(newUploadZone, uploadZone);
-        
-        // Add fresh click listener
-        newUploadZone.addEventListener('click', function(e) {
-            console.log('CLICK DETECTED!');
-            
-            if (selectedClient && fileInput) {
-                console.log('Opening file browser...');
-                fileInput.click();
-            } else {
-                alert('Please select a client first or file input not found');
-            }
-        });
-        
-        newUploadZone.style.cursor = 'pointer';
-        console.log('Fresh click handler added');
-    }
-}
-
+// Setup file upload with proper event handling
 function setupFileUpload() {
     const uploadZone = document.getElementById('uploadZone');
     const fileInput = document.getElementById('fileInput');
     
     if (uploadZone && fileInput) {
-        // Make sure we're adding a fresh event listener
-        uploadZone.removeEventListener('click', handleUploadZoneClick);
-        uploadZone.addEventListener('click', handleUploadZoneClick);
+        // Click handler for upload zone
+        uploadZone.addEventListener('click', function(e) {
+            // Don't trigger if clicking on buttons in instructions
+            if (e.target.closest('button') || e.target.closest('a')) {
+                return;
+            }
+            
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (selectedClient) {
+                fileInput.click();
+            } else {
+                showMessage('⚠️ Please select a client first', 'warning');
+            }
+        });
+        
+        // Make upload zone look clickable
+        uploadZone.style.cursor = 'pointer';
         
         // Drag and drop
         uploadZone.addEventListener('dragover', (e) => {
@@ -901,7 +747,7 @@ function setupFileUpload() {
     }
 }
 
-// Show upload instructions below upload zone
+// Show upload instructions
 function showUploadInstructions() {
     if (!selectedClient) return;
     
@@ -953,7 +799,7 @@ function openGoogleUploadForm() {
     showMessage('📝 Upload form opened! Files will be automatically organized.');
 }
 
-// Main register client function
+// Register client function
 async function registerClient(name, phone, instructor, diveType) {
     showMessage('🚀 Creating client in Google Sheets & Drive...');
 
@@ -1107,7 +953,7 @@ function testGoogleScript() {
     });
 }
 
-// Enhanced message function with types
+// Show messages
 function showMessage(text, type = 'success') {
     const existing = document.querySelector('.success-message');
     if (existing) existing.remove();
@@ -1131,7 +977,7 @@ function showMessage(text, type = 'success') {
     setTimeout(() => message.remove(), 5000);
 }
 
-// Update all select dropdowns
+// Update select dropdowns
 function updateAllSelects() {
     updateClientSelect();
     updateQRClientSelect();
@@ -1300,7 +1146,7 @@ function switchTab(tabName) {
     }
 }
 
-// Generate QR for specific client
+// QR functions
 function generateClientQR(clientId) {
     const client = clients.find(c => c.id == clientId);
     if (!client) return;
@@ -1342,7 +1188,6 @@ function sendClientWhatsApp(clientId) {
     window.open(whatsappUrl, '_blank');
 }
 
-// Generate QR for selected client from dropdown
 function generateQRForClient() {
     const select = document.getElementById('qrClientSelect');
     const clientId = select.value;
@@ -1355,7 +1200,6 @@ function generateQRForClient() {
     generateClientQR(clientId);
 }
 
-// Placeholder functions for buttons that aren't implemented yet
 function printAllQRs() {
     showMessage('🔄 Print All QRs feature coming soon!', 'warning');
 }
@@ -1403,7 +1247,7 @@ function downloadClientQR(clientId) {
     link.click();
 }
 
-// SINGLE INITIALIZATION - NO DUPLICATES
+// INITIALIZATION
 document.addEventListener('DOMContentLoaded', function () {
     updateAllSelects();
     updateStats();
@@ -1434,7 +1278,7 @@ document.addEventListener('DOMContentLoaded', function () {
         this.reset();
     });
 
-    // SINGLE CLIENT SELECTION HANDLER
+    // Client selection handler
     document.getElementById('clientSelect').addEventListener('change', function () {
         const clientId = this.value;
         const client = clients.find(c => c.id == clientId);
@@ -1461,7 +1305,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Setup file upload functionality
     setupFileUpload();
 });
-</script>
+    </script>
 </body>
 
 </html>

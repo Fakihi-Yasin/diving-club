@@ -568,20 +568,16 @@ let isGoogleConnected = false;
 // CORS-free submission function using JSONP
 function submitToGoogleScript(data) {
     return new Promise((resolve) => {
-        // Create a unique callback function name
         const callbackName = 'callback_' + Date.now();
 
-        // Create the callback function
         window[callbackName] = function (response) {
             resolve(response);
-            // Clean up
             if (document.head.contains(script)) {
                 document.head.removeChild(script);
             }
             delete window[callbackName];
         };
 
-        // Create JSONP script tag
         const script = document.createElement('script');
         const params = new URLSearchParams({
             callback: callbackName,
@@ -595,7 +591,6 @@ function submitToGoogleScript(data) {
         script.src = `${GOOGLE_SCRIPT_URL}?${params.toString()}`;
         document.head.appendChild(script);
 
-        // Timeout fallback
         setTimeout(() => {
             if (window[callbackName]) {
                 resolve({ success: false, error: 'Timeout' });
@@ -608,39 +603,7 @@ function submitToGoogleScript(data) {
     });
 }
 
-// Function to upload files to Google Drive via Apps Script
-function uploadFilesToDrive(files, clientCode) {
-    return new Promise((resolve, reject) => {
-        const formData = new FormData();
-        formData.append('clientCode', clientCode);
-        
-        // Add files to form data
-        Array.from(files).forEach((file, index) => {
-            formData.append(`file_${index}`, file);
-        });
-        
-        // Show progress
-        const progressText = document.getElementById('progressText');
-        if (progressText) {
-            progressText.textContent = `Uploading ${files.length} files to Google Drive...`;
-        }
-        
-        fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(result => {
-            resolve(result);
-        })
-        .catch(error => {
-            reject(error);
-        });
-    });
-}
-
-// FIXED - Handle file uploads
-// Replace your handleFiles function with this simple solution:
+// FIXED - Handle file uploads with modal options
 function handleFiles(files) {
     if (!selectedClient) {
         showMessage('⚠️ Please select a client first', 'warning');
@@ -652,13 +615,13 @@ function handleFiles(files) {
         return;
     }
 
-    // Show the upload form method
     showUploadOptions(files.length);
 }
 
-// Show upload options to user
+// Show upload options modal
 function showUploadOptions(fileCount) {
     const modal = document.createElement('div');
+    modal.id = 'uploadModal';
     modal.style.cssText = `
         position: fixed;
         top: 0;
@@ -678,16 +641,16 @@ function showUploadOptions(fileCount) {
             <p style="margin-bottom: 30px;">For client: <strong>${selectedClient.name}</strong> (${selectedClient.code})</p>
             
             <div style="margin-bottom: 30px;">
-                <button onclick="openUploadForm()" class="btn btn-success" style="margin: 10px;">
+                <button onclick="openUploadForm()" class="btn btn-success" style="margin: 10px; padding: 15px 25px;">
                     📝 Use Google Form (Recommended)
                 </button>
                 <br>
-                <button onclick="openDriveFolder()" class="btn btn-primary" style="margin: 10px;">
+                <button onclick="openDriveFolder()" class="btn btn-primary" style="margin: 10px; padding: 15px 25px;">
                     📁 Open Drive Folder Directly
                 </button>
             </div>
             
-            <button onclick="closeModal()" class="btn" style="background: #ccc;">
+            <button onclick="closeModal()" class="btn" style="background: #ccc; padding: 15px 25px;">
                 ❌ Cancel
             </button>
         </div>
@@ -695,9 +658,10 @@ function showUploadOptions(fileCount) {
     
     document.body.appendChild(modal);
     
-    // Add functions to window object for onclick handlers
+    // Add global functions for modal buttons
     window.openUploadForm = () => {
-        const formUrl = `https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?usp=pp_url&entry.CLIENT_CODE=${selectedClient.code}&entry.CLIENT_NAME=${selectedClient.name}`;
+        // Replace YOUR_FORM_ID with actual Google Form ID when you create it
+        const formUrl = `https://docs.google.com/forms/d/e/1FAIpQLSdVvRJwKYFo2E9RyOdNpyN9A9w4_Fw-Z3uGZQHqWvXyWtxY5A/viewform?usp=pp_url&entry.123456=${selectedClient.code}&entry.789012=${selectedClient.name}`;
         window.open(formUrl, '_blank');
         closeModal();
         showMessage('📝 Google Form opened! Upload your files there.');
@@ -710,131 +674,75 @@ function showUploadOptions(fileCount) {
     };
     
     window.closeModal = () => {
-        document.body.removeChild(modal);
+        const modal = document.getElementById('uploadModal');
+        if (modal) {
+            document.body.removeChild(modal);
+        }
         delete window.openUploadForm;
         delete window.openDriveFolder;
         delete window.closeModal;
     };
 }
 
-
-// Alternative: Direct Drive Upload Instructions
-function showDriveUploadInstructions() {
-    const instructions = `
-        <div class="client-card" style="margin-top: 20px;">
-            <h3>📸 How to Upload Photos</h3>
-            <p style="margin: 15px 0;">Choose your preferred method:</p>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
-                <div style="border: 2px solid #667eea; border-radius: 12px; padding: 20px; text-align: center;">
-                    <h4>📝 Method 1: Google Form</h4>
-                    <p style="margin: 10px 0; font-size: 0.9em;">Easy file upload with automatic organization</p>
-                    <button onclick="openGoogleUploadForm()" class="btn btn-success">Open Upload Form</button>
-                </div>
-                
-                <div style="border: 2px solid #28a745; border-radius: 12px; padding: 20px; text-align: center;">
-                    <h4>📁 Method 2: Direct to Drive</h4>
-                    <p style="margin: 10px 0; font-size: 0.9em;">Upload directly to client's folder</p>
-                    <a href="${selectedClient ? selectedClient.driveUrl : '#'}" target="_blank" class="btn btn-primary">Open Drive Folder</a>
-                </div>
-            </div>
-            
-            <p style="margin-top: 20px; font-size: 0.9em; color: #666;">
-                <strong>💡 Tip:</strong> Both methods will store files in the client's dedicated Google Drive folder.
-            </p>
-        </div>
-    `;
-    
+// FIXED - Setup file upload with proper drag and drop
+function setupFileUpload() {
     const uploadZone = document.getElementById('uploadZone');
-    if (uploadZone && selectedClient) {
-        uploadZone.innerHTML = instructions;
-        uploadZone.classList.remove('hidden');
-    }
-}
-
-// Add this to your client selection handler
-function handleClientSelection() {
-    const clientSelect = document.getElementById('clientSelect');
-    clientSelect.addEventListener('change', function () {
-        const clientId = this.value;
-        const client = clients.find(c => c.id == clientId);
-
-        if (client) {
-            selectedClient = client;
-            document.getElementById('selectedClientName').textContent = client.name;
-            showDriveUploadInstructions(); // Show upload options
-        } else {
-            document.getElementById('uploadZone').classList.add('hidden');
-        }
-    });
-}
-
-// Google Upload Form function
-function openGoogleUploadForm() {
-    if (!selectedClient) {
-        showMessage('⚠️ Please select a client first', 'warning');
-        return;
-    }
+    const fileInput = document.getElementById('fileInput');
     
-    // Replace YOUR_FORM_ID with your actual Google Form ID
-    const formUrl = `https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?usp=pp_url&entry.123456=${selectedClient.code}&entry.789012=${selectedClient.name}`;
-    window.open(formUrl, '_blank');
-    showMessage('📝 Upload form opened! Files will be automatically organized.');
-}
-
-// Enhanced file upload with drag and drop
-// function setupFileUpload() {
-//     const uploadZone = document.getElementById('uploadZone');
-//     const fileInput = document.getElementById('fileInput');
-    
-//     if (uploadZone && fileInput) {
-//         // Click to upload
-//         uploadZone.addEventListener('click', () => {
-//             if (selectedClient) {
-//                 fileInput.click();
-//             } else {
-//                 showMessage('⚠️ Please select a client first', 'warning');
-//             }
-//         });
+    if (uploadZone && fileInput) {
+        // Click to upload
+        uploadZone.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (selectedClient) {
+                fileInput.click();
+            } else {
+                showMessage('⚠️ Please select a client first', 'warning');
+            }
+        });
         
-//         // Drag and drop
-//         uploadZone.addEventListener('dragover', (e) => {
-//             e.preventDefault();
-//             if (selectedClient) {
-//                 uploadZone.classList.add('dragover');
-//             }
-//         });
+        // Drag and drop
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            if (selectedClient) {
+                uploadZone.classList.add('dragover');
+            }
+        });
         
-//         uploadZone.addEventListener('dragleave', () => {
-//             uploadZone.classList.remove('dragover');
-//         });
+        uploadZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+        });
         
-//         uploadZone.addEventListener('drop', (e) => {
-//             e.preventDefault();
-//             uploadZone.classList.remove('dragover');
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
             
-//             if (selectedClient) {
-//                 handleFiles(e.dataTransfer.files);
-//             } else {
-//                 showMessage('⚠️ Please select a client first', 'warning');
-//             }
-//         });
+            if (selectedClient) {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFiles(files);
+                }
+            } else {
+                showMessage('⚠️ Please select a client first', 'warning');
+            }
+        });
         
-//         // File input change
-//         fileInput.addEventListener('change', (e) => {
-//             if (e.target.files.length > 0) {
-//                 handleFiles(e.target.files);
-//             }
-//         });
-//     }
-// }
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFiles(e.target.files);
+                // Reset file input
+                e.target.value = '';
+            }
+        });
+    }
+}
 
 // Main register client function
 async function registerClient(name, phone, instructor, diveType) {
     showMessage('🚀 Creating client in Google Sheets & Drive...');
 
     try {
-        // Use the JSONP method to call Google Script
         const result = await submitToGoogleScript({
             action: 'createClient',
             name: name,
@@ -969,94 +877,19 @@ function testGoogleScript() {
         instructor: 'Test',
         diveType: 'Test'
     })
-        .then((result) => {
-            if (result.success) {
-                showMessage('✅ Google Script connection successful!');
-                updateConnectionStatus(true);
-            } else {
-                showMessage('❌ Google Script test failed: ' + (result.error || 'Unknown error'), 'error');
-                updateConnectionStatus(false);
-            }
-        })
-        .catch((error) => {
-            showMessage('❌ Connection failed: ' + error.message, 'error');
-            updateConnectionStatus(false);
-        });
-}
-
-// CORS-free approach using form submission (backup method)
-function submitToGoogleForm(name, phone, instructor, diveType) {
-    return new Promise((resolve, reject) => {
-        try {
-            // Create hidden form to submit to Google Form
-            const form = document.createElement('form');
-            form.action = 'https://docs.google.com/forms/d/e/1FAIpQLSdVvRJwKYFo2E9RyOdNpyN9A9w4_Fw-Z3uGZQHqWvXyWtxY5A/formResponse';
-            form.method = 'POST';
-            form.target = 'hidden_iframe';
-            form.style.display = 'none';
-
-            // Create hidden iframe to capture response
-            const iframe = document.createElement('iframe');
-            iframe.name = 'hidden_iframe';
-            iframe.style.display = 'none';
-            document.body.appendChild(iframe);
-
-            // Add form fields (replace with your actual Google Form field names)
-            const fields = [
-                { name: 'entry.123456789', value: name },
-                { name: 'entry.987654321', value: phone },
-                { name: 'entry.456789123', value: instructor },
-                { name: 'entry.789123456', value: diveType }
-            ];
-
-            fields.forEach(field => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = field.name;
-                input.value = field.value;
-                form.appendChild(input);
-            });
-
-            document.body.appendChild(form);
-            form.submit();
-
-            // Clean up
-            setTimeout(() => {
-                document.body.removeChild(form);
-                document.body.removeChild(iframe);
-                resolve({ success: true });
-            }, 1000);
-
-        } catch (error) {
-            reject(error);
-        }
-    });
-}
-
-// Test Google Form
-function testGoogleForm() {
-    showMessage('🧪 Testing Google Form submission...');
-
-    submitToGoogleForm('Test User', '+1234567890', 'Omar', 'discovery')
-        .then(() => {
-            showMessage('✅ Google Form test successful!');
+    .then((result) => {
+        if (result.success) {
+            showMessage('✅ Google Script connection successful!');
             updateConnectionStatus(true);
-        })
-        .catch((error) => {
-            showMessage('❌ Google Form test failed: ' + error.message, 'error');
+        } else {
+            showMessage('❌ Google Script test failed: ' + (result.error || 'Unknown error'), 'error');
             updateConnectionStatus(false);
-        });
-}
-
-// Open Google Form
-function openGoogleForm() {
-    window.open(GOOGLE_FORM_URL, '_blank');
-}
-
-// Refresh from sheet (manual process)
-function refreshFromSheet() {
-    showMessage('📋 Please manually check the Google Sheet for new entries and add them here if needed.');
-    openSheet();
+        }
+    })
+    .catch((error) => {
+        showMessage('❌ Connection failed: ' + error.message, 'error');
+        updateConnectionStatus(false);
+    });
 }
 
 // Enhanced message function with types
@@ -1067,7 +900,6 @@ function showMessage(text, type = 'success') {
     const message = document.createElement('div');
     message.className = `success-message ${type}`;
 
-    // Style based on type
     if (type === 'error') {
         message.style.background = 'linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%)';
         message.style.color = '#721c24';
@@ -1259,11 +1091,8 @@ function generateClientQR(clientId) {
     if (!client) return;
 
     selectedClient = client;
-
-    // Switch to QR tab
     switchTab('qr');
 
-    // Generate QR code
     const qrGrid = document.getElementById('qrGrid');
     qrGrid.innerHTML = `
         <div class="client-card" style="grid-column: 1 / -1;">
@@ -1281,7 +1110,6 @@ function generateClientQR(clientId) {
         </div>
     `;
 
-    // Generate QR code
     QRCode.toCanvas(document.getElementById('clientQRCanvas'), client.driveUrl, {
         width: 280,
         height: 280,
@@ -1360,7 +1188,7 @@ function downloadClientQR(clientId) {
     link.click();
 }
 
-// Initialize everything when page loads
+// FIXED - Initialize everything when page loads
 document.addEventListener('DOMContentLoaded', function () {
     updateAllSelects();
     updateStats();
@@ -1388,12 +1216,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const diveType = document.getElementById('diveType').value;
 
         registerClient(name, phone, instructor, diveType);
-
-        // Reset form
         this.reset();
     });
 
-    // Client selection for upload
+    // FIXED - Single client selection handler
     document.getElementById('clientSelect').addEventListener('change', function () {
         const clientId = this.value;
         const client = clients.find(c => c.id == clientId);
@@ -1403,11 +1229,12 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('selectedClientName').textContent = client.name;
             document.getElementById('uploadZone').classList.remove('hidden');
         } else {
+            selectedClient = null;
             document.getElementById('uploadZone').classList.add('hidden');
         }
     });
 
-    // File upload setup
+    // Setup file upload functionality
     setupFileUpload();
 });
 </script>

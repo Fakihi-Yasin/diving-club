@@ -642,13 +642,13 @@ function showUploadOptions(fileCount) {
             <p style="margin-bottom: 30px;">For client: <strong>${selectedClient.name}</strong> (${selectedClient.code})</p>
             
             <div style="margin-bottom: 30px;">
-                <button onclick="openUploadForm()" class="btn btn-success" style="margin: 10px; padding: 15px 25px;">
-                    📝 Use Google Form (Recommended)
-                </button>
-                <br>
-                <button onclick="openDriveFolder()" class="btn btn-primary" style="margin: 10px; padding: 15px 25px;">
-                    📁 Open Drive Folder Directly
-                </button>
+                <div style="border: 3px solid #28a745; border-radius: 12px; padding: 30px; background: #f8fff9;">
+                    <h3 style="color: #28a745; margin-bottom: 15px;">📁 Upload to Google Drive</h3>
+                    <p style="margin-bottom: 20px;">Upload directly to client's dedicated folder</p>
+                    <button onclick="openDriveFolder()" class="btn btn-success" style="padding: 15px 25px; font-size: 1.1em;">
+                        🚀 Open Drive Folder
+                    </button>
+                </div>
             </div>
             
             <button onclick="closeModal()" class="btn" style="background: #ccc; padding: 15px 25px;">
@@ -660,17 +660,10 @@ function showUploadOptions(fileCount) {
     document.body.appendChild(modal);
     
     // Add global functions for modal buttons
-    window.openUploadForm = () => {
-        const formUrl = GOOGLE_FORM_URL + `?usp=pp_url&entry.123456=${selectedClient.code}&entry.789012=${selectedClient.name}`;
-        window.open(formUrl, '_blank');
-        closeModal();
-        showMessage('📝 Google Form opened! Upload your files there.');
-    };
-    
     window.openDriveFolder = () => {
         window.open(selectedClient.driveUrl, '_blank');
         closeModal();
-        showMessage('📁 Drive folder opened! You can drag & drop files directly.');
+        showMessage('📁 Drive folder opened! You can drag & drop files directly into the folder.');
     };
     
     window.closeModal = () => {
@@ -678,11 +671,54 @@ function showUploadOptions(fileCount) {
         if (modal) {
             document.body.removeChild(modal);
         }
-        delete window.openUploadForm;
         delete window.openDriveFolder;
         delete window.closeModal;
     };
 }
+
+
+function showUploadInstructions() {
+    if (!selectedClient) return;
+    
+    let instructionsDiv = document.getElementById('uploadInstructions');
+    
+    if (!instructionsDiv) {
+        instructionsDiv = document.createElement('div');
+        instructionsDiv.id = 'uploadInstructions';
+        instructionsDiv.className = 'client-card';
+        instructionsDiv.style.marginTop = '20px';
+        
+        const uploadZone = document.getElementById('uploadZone');
+        uploadZone.parentNode.insertBefore(instructionsDiv, uploadZone.nextSibling);
+    }
+    
+    instructionsDiv.style.display = 'block';
+    instructionsDiv.innerHTML = `
+        <h3>📸 Upload Photos for ${selectedClient.name}</h3>
+        <p style="margin: 15px 0;">Click the button below to open the Google Drive folder:</p>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <a href="${selectedClient.driveUrl}" target="_blank" class="btn btn-success" style="padding: 15px 30px; font-size: 1.1em;">
+                📁 Open ${selectedClient.name}'s Drive Folder
+            </a>
+        </div>
+        
+        <div style="background: #f8f9fa; border-radius: 8px; padding: 15px; margin-top: 20px;">
+            <h4 style="margin-bottom: 10px;">💡 How to upload:</h4>
+            <ol style="text-align: left; margin: 0; padding-left: 20px;">
+                <li>Click the button above to open the Drive folder</li>
+                <li>Drag and drop your photos/videos into the folder</li>
+                <li>Or click "New" → "File upload" in Google Drive</li>
+            </ol>
+        </div>
+        
+        <p style="margin-top: 15px; font-size: 0.9em; color: #666;">
+            <strong>💡 Tip:</strong> You can also drag & drop files on the upload area above to get this option.
+        </p>
+    `;
+}
+
+
 
 // Setup file upload with proper event handling
 function setupFileUpload() {

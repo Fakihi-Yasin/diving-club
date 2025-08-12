@@ -557,7 +557,7 @@
 
 <script>
     // Configuration - Updated with your new URL
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbza9rd1li-w2JtIBp2YSOgjhZxg4_IKWYfQGMFxiSCd408maP2YXTAAbh0cz0gcuy_6lw/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVsdgKJFHJvxQBeTXH3uvqgQ8rUzz8LHO7YxDCcor0YWiK4fxpS9df90-q2H2VEwttkg/exec';
 const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1xBvTa1BudwW677lUQ9noT0Fm_iJB38BDaJfQC1WFGbc';
 const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdVvRJwKYFo2E9RyOdNpyN9A9w4_Fw-Z3uGZQHqWvXyWtxY5A/viewform';
 
@@ -570,9 +570,9 @@ function submitToGoogleScript(data) {
     return new Promise((resolve) => {
         // Create a unique callback function name
         const callbackName = 'callback_' + Date.now();
-        
+
         // Create the callback function
-        window[callbackName] = function(response) {
+        window[callbackName] = function (response) {
             resolve(response);
             // Clean up
             if (document.head.contains(script)) {
@@ -580,7 +580,7 @@ function submitToGoogleScript(data) {
             }
             delete window[callbackName];
         };
-        
+
         // Create JSONP script tag
         const script = document.createElement('script');
         const params = new URLSearchParams({
@@ -591,10 +591,10 @@ function submitToGoogleScript(data) {
             instructor: data.instructor,
             diveType: data.diveType
         });
-        
+
         script.src = `${GOOGLE_SCRIPT_URL}?${params.toString()}`;
         document.head.appendChild(script);
-        
+
         // Timeout fallback
         setTimeout(() => {
             if (window[callbackName]) {
@@ -608,10 +608,145 @@ function submitToGoogleScript(data) {
     });
 }
 
+// Function to upload files to Google Drive via Apps Script
+function uploadFilesToDrive(files, clientCode) {
+    return new Promise((resolve, reject) => {
+        const formData = new FormData();
+        formData.append('clientCode', clientCode);
+        
+        // Add files to form data
+        Array.from(files).forEach((file, index) => {
+            formData.append(`file_${index}`, file);
+        });
+        
+        // Show progress
+        const progressText = document.getElementById('progressText');
+        if (progressText) {
+            progressText.textContent = `Uploading ${files.length} files to Google Drive...`;
+        }
+        
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(result => {
+            resolve(result);
+        })
+        .catch(error => {
+            reject(error);
+        });
+    });
+}
+
+// FIXED - Handle file uploads
+function handleFiles(files) {
+    if (!selectedClient) {
+        showMessage('⚠️ Please select a client first', 'warning');
+        return;
+    }
+
+    if (files.length === 0) {
+        showMessage('⚠️ No files selected', 'warning');
+        return;
+    }
+
+    const progressDiv = document.getElementById('uploadProgress');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+
+    progressDiv.classList.remove('hidden');
+    progressFill.style.width = '0%';
+    progressText.textContent = 'Preparing files for upload...';
+
+    // Upload files to Google Drive via Apps Script
+    uploadFilesToDrive(files, selectedClient.code)
+        .then(result => {
+            if (result.success) {
+                progressFill.style.width = '100%';
+                progressText.textContent = `✅ ${result.uploadedCount} files uploaded successfully!`;
+                
+                // Update local count
+                const clientIndex = clients.findIndex(c => c.id === selectedClient.id);
+                if (clientIndex !== -1) {
+                    clients[clientIndex].photosCount = (clients[clientIndex].photosCount || 0) + result.uploadedCount;
+                    localStorage.setItem('divingClients', JSON.stringify(clients));
+                }
+                
+                showMessage(`✅ ${result.uploadedCount} files uploaded to ${selectedClient.name}'s Google Drive folder!`);
+                updateStats();
+                
+                setTimeout(() => {
+                    progressDiv.classList.add('hidden');
+                }, 2000);
+                
+            } else {
+                throw new Error(result.error || 'Upload failed');
+            }
+        })
+        .catch(error => {
+            console.error('Upload error:', error);
+            progressFill.style.width = '0%';
+            progressText.textContent = '❌ Upload failed';
+            showMessage('❌ Upload failed: ' + error.message, 'error');
+            
+            setTimeout(() => {
+                progressDiv.classList.add('hidden');
+            }, 3000);
+        });
+}
+
+// Enhanced file upload with drag and drop
+function setupFileUpload() {
+    const uploadZone = document.getElementById('uploadZone');
+    const fileInput = document.getElementById('fileInput');
+    
+    if (uploadZone && fileInput) {
+        // Click to upload
+        uploadZone.addEventListener('click', () => {
+            if (selectedClient) {
+                fileInput.click();
+            } else {
+                showMessage('⚠️ Please select a client first', 'warning');
+            }
+        });
+        
+        // Drag and drop
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            if (selectedClient) {
+                uploadZone.classList.add('dragover');
+            }
+        });
+        
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+        
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            
+            if (selectedClient) {
+                handleFiles(e.dataTransfer.files);
+            } else {
+                showMessage('⚠️ Please select a client first', 'warning');
+            }
+        });
+        
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFiles(e.target.files);
+            }
+        });
+    }
+}
+
 // Main register client function
 async function registerClient(name, phone, instructor, diveType) {
     showMessage('🚀 Creating client in Google Sheets & Drive...');
-    
+
     try {
         // Use the JSONP method to call Google Script
         const result = await submitToGoogleScript({
@@ -621,7 +756,7 @@ async function registerClient(name, phone, instructor, diveType) {
             instructor: instructor,
             diveType: diveType
         });
-        
+
         if (result.success) {
             const client = {
                 id: Date.now(),
@@ -636,11 +771,11 @@ async function registerClient(name, phone, instructor, diveType) {
                 photosCount: 0,
                 status: 'Active'
             };
-            
+
             clients.push(client);
             localStorage.setItem('divingClients', JSON.stringify(clients));
             selectedClient = client;
-            
+
             // Generate QR code
             document.getElementById('qrcode').innerHTML = '';
             QRCode.toCanvas(document.getElementById('qrcode'), result.driveUrl, {
@@ -652,20 +787,20 @@ async function registerClient(name, phone, instructor, diveType) {
                     light: '#ffffff'
                 }
             });
-            
+
             document.getElementById('generatedCode').textContent = result.clientCode;
             document.getElementById('folderLink').href = result.driveUrl;
             document.getElementById('qrResult').classList.remove('hidden');
-            
+
             showMessage('✅ SUCCESS! Client added to Google Sheets & Drive folder created!');
             updateConnectionStatus(true);
             updateAllSelects();
             updateStats();
-            
+
         } else {
             throw new Error(result.error || 'Failed to create client');
         }
-        
+
     } catch (error) {
         console.error('Registration error:', error);
         showMessage('❌ Google connection failed. Registering locally...', 'warning');
@@ -740,7 +875,7 @@ function updateConnectionStatus(connected) {
 // Test Google Script connection
 function testGoogleScript() {
     showMessage('🧪 Testing Google Script connection...');
-    
+
     submitToGoogleScript({
         action: 'test',
         name: 'Test',
@@ -748,19 +883,19 @@ function testGoogleScript() {
         instructor: 'Test',
         diveType: 'Test'
     })
-    .then((result) => {
-        if (result.success) {
-            showMessage('✅ Google Script connection successful!');
-            updateConnectionStatus(true);
-        } else {
-            showMessage('❌ Google Script test failed: ' + (result.error || 'Unknown error'), 'error');
+        .then((result) => {
+            if (result.success) {
+                showMessage('✅ Google Script connection successful!');
+                updateConnectionStatus(true);
+            } else {
+                showMessage('❌ Google Script test failed: ' + (result.error || 'Unknown error'), 'error');
+                updateConnectionStatus(false);
+            }
+        })
+        .catch((error) => {
+            showMessage('❌ Connection failed: ' + error.message, 'error');
             updateConnectionStatus(false);
-        }
-    })
-    .catch((error) => {
-        showMessage('❌ Connection failed: ' + error.message, 'error');
-        updateConnectionStatus(false);
-    });
+        });
 }
 
 // CORS-free approach using form submission (backup method)
@@ -836,50 +971,6 @@ function openGoogleForm() {
 function refreshFromSheet() {
     showMessage('📋 Please manually check the Google Sheet for new entries and add them here if needed.');
     openSheet();
-}
-
-// Handle file uploads
-function handleFiles(files) {
-    if (!selectedClient) return;
-
-    const progressDiv = document.getElementById('uploadProgress');
-    const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
-
-    progressDiv.classList.remove('hidden');
-
-    let uploaded = 0;
-    const total = files.length;
-
-    const uploadNext = () => {
-        if (uploaded < total) {
-            const file = files[uploaded];
-            const progress = ((uploaded + 1) / total) * 100;
-
-            progressFill.style.width = `${progress}%`;
-            progressText.textContent = `Processing ${file.name}... (${uploaded + 1}/${total})`;
-
-            uploaded++;
-            setTimeout(uploadNext, 600);
-        } else {
-            progressText.textContent = `✅ ${total} photos processed!`;
-
-            // Update local count
-            const clientIndex = clients.findIndex(c => c.id === selectedClient.id);
-            if (clientIndex !== -1) {
-                clients[clientIndex].photosCount = (clients[clientIndex].photosCount || 0) + total;
-                localStorage.setItem('divingClients', JSON.stringify(clients));
-            }
-
-            setTimeout(() => {
-                progressDiv.classList.add('hidden');
-                showMessage(`✅ ${total} photos processed for ${selectedClient.name}!`);
-                updateStats();
-            }, 1500);
-        }
-    };
-
-    uploadNext();
 }
 
 // Enhanced message function with types
@@ -1230,32 +1321,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // File upload
-    const uploadZone = document.getElementById('uploadZone');
-    const fileInput = document.getElementById('fileInput');
-
-    if (uploadZone && fileInput) {
-        uploadZone.addEventListener('click', () => fileInput.click());
-
-        uploadZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadZone.classList.add('dragover');
-        });
-
-        uploadZone.addEventListener('dragleave', () => {
-            uploadZone.classList.remove('dragover');
-        });
-
-        uploadZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadZone.classList.remove('dragover');
-            handleFiles(e.dataTransfer.files);
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
-        });
-    }
+    // File upload setup
+    setupFileUpload();
 });
 </script>
 </body>

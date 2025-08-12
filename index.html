@@ -660,8 +660,7 @@ function showUploadOptions(fileCount) {
     
     // Add global functions for modal buttons
     window.openUploadForm = () => {
-        // Replace YOUR_FORM_ID with actual Google Form ID when you create it
-        const formUrl = `https://docs.google.com/forms/d/e/1FAIpQLSdVvRJwKYFo2E9RyOdNpyN9A9w4_Fw-Z3uGZQHqWvXyWtxY5A/viewform?usp=pp_url&entry.123456=${selectedClient.code}&entry.789012=${selectedClient.name}`;
+        const formUrl = GOOGLE_FORM_URL + `?usp=pp_url&entry.123456=${selectedClient.code}&entry.789012=${selectedClient.name}`;
         window.open(formUrl, '_blank');
         closeModal();
         showMessage('📝 Google Form opened! Upload your files there.');
@@ -684,7 +683,7 @@ function showUploadOptions(fileCount) {
     };
 }
 
-// FIXED - Setup file upload with proper drag and drop
+// FIXED - Setup file upload with proper click handling
 function setupFileUpload() {
     const uploadZone = document.getElementById('uploadZone');
     const fileInput = document.getElementById('fileInput');
@@ -693,6 +692,8 @@ function setupFileUpload() {
         // Click to upload
         uploadZone.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
+            
             if (selectedClient) {
                 fileInput.click();
             } else {
@@ -731,11 +732,62 @@ function setupFileUpload() {
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
                 handleFiles(e.target.files);
-                // Reset file input
                 e.target.value = '';
             }
         });
     }
+}
+
+// Show upload instructions below upload zone
+function showUploadInstructions() {
+    if (!selectedClient) return;
+    
+    let instructionsDiv = document.getElementById('uploadInstructions');
+    
+    if (!instructionsDiv) {
+        instructionsDiv = document.createElement('div');
+        instructionsDiv.id = 'uploadInstructions';
+        instructionsDiv.className = 'client-card';
+        instructionsDiv.style.marginTop = '20px';
+        
+        const uploadZone = document.getElementById('uploadZone');
+        uploadZone.parentNode.insertBefore(instructionsDiv, uploadZone.nextSibling);
+    }
+    
+    instructionsDiv.style.display = 'block';
+    instructionsDiv.innerHTML = `
+        <h3>📸 Upload Options for ${selectedClient.name}</h3>
+        <p style="margin: 15px 0;">You can upload photos using any of these methods:</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+            <div style="border: 2px solid #667eea; border-radius: 12px; padding: 20px; text-align: center;">
+                <h4>📝 Method 1: Google Form</h4>
+                <p style="margin: 10px 0; font-size: 0.9em;">Easy file upload with automatic organization</p>
+                <button onclick="openGoogleUploadForm()" class="btn btn-success">Open Upload Form</button>
+            </div>
+            
+            <div style="border: 2px solid #28a745; border-radius: 12px; padding: 20px; text-align: center;">
+                <h4>📁 Method 2: Direct to Drive</h4>
+                <p style="margin: 10px 0; font-size: 0.9em;">Upload directly to client's folder</p>
+                <a href="${selectedClient.driveUrl}" target="_blank" class="btn btn-primary">Open Drive Folder</a>
+            </div>
+        </div>
+        
+        <p style="margin-top: 20px; font-size: 0.9em; color: #666;">
+            <strong>💡 Tip:</strong> You can also drag & drop files on the upload area above, or click it to browse files.
+        </p>
+    `;
+}
+
+function openGoogleUploadForm() {
+    if (!selectedClient) {
+        showMessage('⚠️ Please select a client first', 'warning');
+        return;
+    }
+    
+    const formUrl = GOOGLE_FORM_URL + `?usp=pp_url&entry.123456=${selectedClient.code}&entry.789012=${selectedClient.name}`;
+    window.open(formUrl, '_blank');
+    showMessage('📝 Upload form opened! Files will be automatically organized.');
 }
 
 // Main register client function
@@ -1188,7 +1240,7 @@ function downloadClientQR(clientId) {
     link.click();
 }
 
-// FIXED - Initialize everything when page loads
+// SINGLE INITIALIZATION - NO DUPLICATES
 document.addEventListener('DOMContentLoaded', function () {
     updateAllSelects();
     updateStats();
@@ -1219,7 +1271,7 @@ document.addEventListener('DOMContentLoaded', function () {
         this.reset();
     });
 
-    // FIXED - Single client selection handler
+    // SINGLE CLIENT SELECTION HANDLER
     document.getElementById('clientSelect').addEventListener('change', function () {
         const clientId = this.value;
         const client = clients.find(c => c.id == clientId);
@@ -1228,9 +1280,18 @@ document.addEventListener('DOMContentLoaded', function () {
             selectedClient = client;
             document.getElementById('selectedClientName').textContent = client.name;
             document.getElementById('uploadZone').classList.remove('hidden');
+            
+            // Show upload instructions
+            showUploadInstructions();
         } else {
             selectedClient = null;
             document.getElementById('uploadZone').classList.add('hidden');
+            
+            // Hide instructions
+            const instructionsDiv = document.getElementById('uploadInstructions');
+            if (instructionsDiv) {
+                instructionsDiv.style.display = 'none';
+            }
         }
     });
 

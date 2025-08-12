@@ -640,6 +640,7 @@ function uploadFilesToDrive(files, clientCode) {
 }
 
 // FIXED - Handle file uploads
+// Replace your handleFiles function with this simple solution:
 function handleFiles(files) {
     if (!selectedClient) {
         showMessage('⚠️ Please select a client first', 'warning');
@@ -651,97 +652,182 @@ function handleFiles(files) {
         return;
     }
 
-    const progressDiv = document.getElementById('uploadProgress');
-    const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
+    // Show the upload form method
+    showUploadOptions(files.length);
+}
 
-    progressDiv.classList.remove('hidden');
-    progressFill.style.width = '0%';
-    progressText.textContent = 'Preparing files for upload...';
-
-    // Upload files to Google Drive via Apps Script
-    uploadFilesToDrive(files, selectedClient.code)
-        .then(result => {
-            if (result.success) {
-                progressFill.style.width = '100%';
-                progressText.textContent = `✅ ${result.uploadedCount} files uploaded successfully!`;
-                
-                // Update local count
-                const clientIndex = clients.findIndex(c => c.id === selectedClient.id);
-                if (clientIndex !== -1) {
-                    clients[clientIndex].photosCount = (clients[clientIndex].photosCount || 0) + result.uploadedCount;
-                    localStorage.setItem('divingClients', JSON.stringify(clients));
-                }
-                
-                showMessage(`✅ ${result.uploadedCount} files uploaded to ${selectedClient.name}'s Google Drive folder!`);
-                updateStats();
-                
-                setTimeout(() => {
-                    progressDiv.classList.add('hidden');
-                }, 2000);
-                
-            } else {
-                throw new Error(result.error || 'Upload failed');
-            }
-        })
-        .catch(error => {
-            console.error('Upload error:', error);
-            progressFill.style.width = '0%';
-            progressText.textContent = '❌ Upload failed';
-            showMessage('❌ Upload failed: ' + error.message, 'error');
+// Show upload options to user
+function showUploadOptions(fileCount) {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+    
+    modal.innerHTML = `
+        <div style="background: white; padding: 40px; border-radius: 20px; text-align: center; max-width: 500px;">
+            <h2 style="margin-bottom: 20px;">📸 Upload ${fileCount} Files</h2>
+            <p style="margin-bottom: 30px;">For client: <strong>${selectedClient.name}</strong> (${selectedClient.code})</p>
             
-            setTimeout(() => {
-                progressDiv.classList.add('hidden');
-            }, 3000);
-        });
+            <div style="margin-bottom: 30px;">
+                <button onclick="openUploadForm()" class="btn btn-success" style="margin: 10px;">
+                    📝 Use Google Form (Recommended)
+                </button>
+                <br>
+                <button onclick="openDriveFolder()" class="btn btn-primary" style="margin: 10px;">
+                    📁 Open Drive Folder Directly
+                </button>
+            </div>
+            
+            <button onclick="closeModal()" class="btn" style="background: #ccc;">
+                ❌ Cancel
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Add functions to window object for onclick handlers
+    window.openUploadForm = () => {
+        const formUrl = `https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?usp=pp_url&entry.CLIENT_CODE=${selectedClient.code}&entry.CLIENT_NAME=${selectedClient.name}`;
+        window.open(formUrl, '_blank');
+        closeModal();
+        showMessage('📝 Google Form opened! Upload your files there.');
+    };
+    
+    window.openDriveFolder = () => {
+        window.open(selectedClient.driveUrl, '_blank');
+        closeModal();
+        showMessage('📁 Drive folder opened! You can drag & drop files directly.');
+    };
+    
+    window.closeModal = () => {
+        document.body.removeChild(modal);
+        delete window.openUploadForm;
+        delete window.openDriveFolder;
+        delete window.closeModal;
+    };
+}
+
+
+// Alternative: Direct Drive Upload Instructions
+function showDriveUploadInstructions() {
+    const instructions = `
+        <div class="client-card" style="margin-top: 20px;">
+            <h3>📸 How to Upload Photos</h3>
+            <p style="margin: 15px 0;">Choose your preferred method:</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+                <div style="border: 2px solid #667eea; border-radius: 12px; padding: 20px; text-align: center;">
+                    <h4>📝 Method 1: Google Form</h4>
+                    <p style="margin: 10px 0; font-size: 0.9em;">Easy file upload with automatic organization</p>
+                    <button onclick="openGoogleUploadForm()" class="btn btn-success">Open Upload Form</button>
+                </div>
+                
+                <div style="border: 2px solid #28a745; border-radius: 12px; padding: 20px; text-align: center;">
+                    <h4>📁 Method 2: Direct to Drive</h4>
+                    <p style="margin: 10px 0; font-size: 0.9em;">Upload directly to client's folder</p>
+                    <a href="${selectedClient ? selectedClient.driveUrl : '#'}" target="_blank" class="btn btn-primary">Open Drive Folder</a>
+                </div>
+            </div>
+            
+            <p style="margin-top: 20px; font-size: 0.9em; color: #666;">
+                <strong>💡 Tip:</strong> Both methods will store files in the client's dedicated Google Drive folder.
+            </p>
+        </div>
+    `;
+    
+    const uploadZone = document.getElementById('uploadZone');
+    if (uploadZone && selectedClient) {
+        uploadZone.innerHTML = instructions;
+        uploadZone.classList.remove('hidden');
+    }
+}
+
+// Add this to your client selection handler
+function handleClientSelection() {
+    const clientSelect = document.getElementById('clientSelect');
+    clientSelect.addEventListener('change', function () {
+        const clientId = this.value;
+        const client = clients.find(c => c.id == clientId);
+
+        if (client) {
+            selectedClient = client;
+            document.getElementById('selectedClientName').textContent = client.name;
+            showDriveUploadInstructions(); // Show upload options
+        } else {
+            document.getElementById('uploadZone').classList.add('hidden');
+        }
+    });
+}
+
+// Google Upload Form function
+function openGoogleUploadForm() {
+    if (!selectedClient) {
+        showMessage('⚠️ Please select a client first', 'warning');
+        return;
+    }
+    
+    // Replace YOUR_FORM_ID with your actual Google Form ID
+    const formUrl = `https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?usp=pp_url&entry.123456=${selectedClient.code}&entry.789012=${selectedClient.name}`;
+    window.open(formUrl, '_blank');
+    showMessage('📝 Upload form opened! Files will be automatically organized.');
 }
 
 // Enhanced file upload with drag and drop
-function setupFileUpload() {
-    const uploadZone = document.getElementById('uploadZone');
-    const fileInput = document.getElementById('fileInput');
+// function setupFileUpload() {
+//     const uploadZone = document.getElementById('uploadZone');
+//     const fileInput = document.getElementById('fileInput');
     
-    if (uploadZone && fileInput) {
-        // Click to upload
-        uploadZone.addEventListener('click', () => {
-            if (selectedClient) {
-                fileInput.click();
-            } else {
-                showMessage('⚠️ Please select a client first', 'warning');
-            }
-        });
+//     if (uploadZone && fileInput) {
+//         // Click to upload
+//         uploadZone.addEventListener('click', () => {
+//             if (selectedClient) {
+//                 fileInput.click();
+//             } else {
+//                 showMessage('⚠️ Please select a client first', 'warning');
+//             }
+//         });
         
-        // Drag and drop
-        uploadZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            if (selectedClient) {
-                uploadZone.classList.add('dragover');
-            }
-        });
+//         // Drag and drop
+//         uploadZone.addEventListener('dragover', (e) => {
+//             e.preventDefault();
+//             if (selectedClient) {
+//                 uploadZone.classList.add('dragover');
+//             }
+//         });
         
-        uploadZone.addEventListener('dragleave', () => {
-            uploadZone.classList.remove('dragover');
-        });
+//         uploadZone.addEventListener('dragleave', () => {
+//             uploadZone.classList.remove('dragover');
+//         });
         
-        uploadZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadZone.classList.remove('dragover');
+//         uploadZone.addEventListener('drop', (e) => {
+//             e.preventDefault();
+//             uploadZone.classList.remove('dragover');
             
-            if (selectedClient) {
-                handleFiles(e.dataTransfer.files);
-            } else {
-                showMessage('⚠️ Please select a client first', 'warning');
-            }
-        });
+//             if (selectedClient) {
+//                 handleFiles(e.dataTransfer.files);
+//             } else {
+//                 showMessage('⚠️ Please select a client first', 'warning');
+//             }
+//         });
         
-        // File input change
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                handleFiles(e.target.files);
-            }
-        });
-    }
-}
+//         // File input change
+//         fileInput.addEventListener('change', (e) => {
+//             if (e.target.files.length > 0) {
+//                 handleFiles(e.target.files);
+//             }
+//         });
+//     }
+// }
 
 // Main register client function
 async function registerClient(name, phone, instructor, diveType) {
